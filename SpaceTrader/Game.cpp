@@ -44,38 +44,37 @@ bool Game::Init() {
 }
 
 void Game::GameLoop() {
-	bool quit = false;
+	while (!quit) {
+		HandleInput();
+		Render();
+	}
+}
 
+void Game::HandleInput() {
 	//Event handler
 	SDL_Event e;
-
-	while (!quit) {
-		//Handle events on queue
-		while (SDL_PollEvent(&e) != 0) {
-			//User requests quit
-			if (e.type == SDL_QUIT) {
-				quit = true;
-			}
-			else if (e.type == SDL_KEYDOWN)
+	while (SDL_PollEvent(&e) != 0) {
+		//User requests quit
+		if (e.type == SDL_QUIT) {
+			quit = true;
+		}
+		else if (e.type == SDL_KEYDOWN)
+		{
+			//Select surfaces based on key press
+			switch (e.key.keysym.sym)
 			{
-				//Select surfaces based on key press
-				switch (e.key.keysym.sym)
-				{
-					case SDLK_1:
-						background = LoadSurface("3.png");
-						break;
-					case SDLK_2:
-						background = LoadSurface("2.png");
-						break;
-					case SDLK_q:
-					case SDLK_ESCAPE:
-						quit = true;
-						break;
-				}
+			case SDLK_1:
+				background = LoadSurface("3.png");
+				break;
+			case SDLK_2:
+				background = LoadSurface("2.png");
+				break;
+			case SDLK_q:
+			case SDLK_ESCAPE:
+				quit = true;
+				break;
 			}
 		}
-		
-		Render();
 	}
 }
 

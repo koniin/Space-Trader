@@ -23,7 +23,7 @@ private:
 	const int SCREEN_WIDTH = 640;
 	const int SCREEN_HEIGHT = 480;
 	const char* TITLE = "Space Trader";
-
+	bool quit = false;
 	//The window we'll be rendering to
 	SDL_Window* window;
 	//The surface contained by the window
@@ -33,6 +33,7 @@ private:
 
 	bool Init();
 	void GameLoop();
+	void HandleInput();
 	void Render();
 	SurfacePtr LoadSurface(std::string path);
 };
