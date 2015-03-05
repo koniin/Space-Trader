@@ -8,8 +8,8 @@
 
 using namespace std;
 
-struct _SurfaceDeleter { void operator()(SDL_Surface* tex) const { SDL_FreeSurface(tex); printf("surface deleted. \n"); } };
-using SurfacePtr = std::unique_ptr<SDL_Surface, _SurfaceDeleter>;
+struct _TextureDeleter { void operator()(SDL_Texture* tex) const { SDL_DestroyTexture(tex); printf("texture deleted. \n"); } };
+using TexturePtr = std::unique_ptr<SDL_Texture, _TextureDeleter>;
 
 class Game
 {
@@ -26,15 +26,16 @@ private:
 	bool quit = false;
 	//The window we'll be rendering to
 	SDL_Window* window;
-	//The surface contained by the window
-	SDL_Surface* screenSurface;
 	// Background
-	SurfacePtr background;
+	TexturePtr background;
+	
+	SDL_Renderer* renderer = NULL;
+	SDL_Texture* texture = NULL;
 
 	bool Init();
 	void GameLoop();
 	void HandleInput();
 	void Render();
-	SurfacePtr LoadSurface(std::string path);
+	TexturePtr LoadTexture(string path);
 };
 

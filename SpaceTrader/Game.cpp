@@ -29,6 +29,16 @@ bool Game::Init() {
 		return false;
 	}
 
+	//Create renderer for window
+	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	if (renderer == NULL) {
+		printf("Renderer could not be created! SDL Error: %s\n", SDL_GetError());
+		return false;
+	}
+	
+	// Sets the color uses for rectangles, lines etc AND for clearing the screen
+	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+
 	// Init SDL_Image with PNG support
 	int imgFlags = IMG_INIT_PNG;
 	if (!(IMG_Init(imgFlags) & imgFlags)) {
@@ -36,9 +46,7 @@ bool Game::Init() {
 		return false;
 	}
 	
-	//Get window surface
-	screenSurface = SDL_GetWindowSurface(window);
-	background = LoadSurface("2.png");
+	background = LoadTexture("2.png");
 	
 	return true;
 }
@@ -64,10 +72,10 @@ void Game::HandleInput() {
 			switch (e.key.keysym.sym)
 			{
 			case SDLK_1:
-				background = LoadSurface("3.png");
+				background = LoadTexture("3.png");
 				break;
 			case SDLK_2:
-				background = LoadSurface("2.png");
+				background = LoadTexture("2.png");
 				break;
 			case SDLK_q:
 			case SDLK_ESCAPE:
@@ -79,26 +87,34 @@ void Game::HandleInput() {
 }
 
 void Game::Render() {
-	//Apply the PNG image
-	SDL_BlitSurface(background.get(), NULL, screenSurface, NULL);
-	//Update the surface
-	SDL_UpdateWindowSurface(window);
+	//Clear screen
+	SDL_RenderClear(renderer);
+	//Render texture to screen
+	SDL_RenderCopy(renderer, background.get(), NULL, NULL);
+	//Update screen
+	SDL_RenderPresent(renderer);
 }
 
-SurfacePtr Game::LoadSurface(std::string path) {
-	SurfacePtr optimizedSurface = NULL;
+TexturePtr Game::LoadTexture(std::string path)
+{
+	//The final texture
+	TexturePtr newTexture = NULL;
+
+	//Load image at specified path
 	SDL_Surface* loadedSurface = IMG_Load(path.c_str());
 	if (loadedSurface == NULL) {
 		printf("Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError());
-	} else {
-		//Convert surface to screen format
-		optimizedSurface = SurfacePtr(SDL_ConvertSurface(loadedSurface, screenSurface->format, NULL));
-		if (optimizedSurface == NULL) {
-			printf("Unable to optimize image %s! SDL Error: %s\n", path.c_str(), SDL_GetError());
+	}
+	else {
+		//Create texture from surface pixels
+		newTexture = TexturePtr(SDL_CreateTextureFromSurface(renderer, loadedSurface));
+		if (newTexture == NULL) {
+			printf("Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError());
 		}
 
 		//Get rid of old loaded surface
 		SDL_FreeSurface(loadedSurface);
 	}
-	return optimizedSurface;
+
+	return newTexture;
 }
