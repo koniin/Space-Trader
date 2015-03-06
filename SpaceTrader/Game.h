@@ -31,11 +31,14 @@ private:
 	Uint32 fps_current; //the current FPS.
 	Uint32 fps_frames; //frames passed since the last recorded fps.
 
+	short currentBackground;
+
 	bool quit = false;
 	//The window we'll be rendering to
 	SDL_Window* window;
 	// Background
 	TexturePtr background;
+	TexturePtr backgrounds[2];
 	
 	SDL_Renderer* renderer = NULL;
 	SDL_Texture* texture = NULL;
@@ -43,8 +46,9 @@ private:
 	bool Init();
 	void GameLoop();
 	void GameLoop2();
+	void GameLoop3();
 	void HandleInput();
-	void Update();
+	void Update(float dt);
 	void Render();
 	TexturePtr LoadTexture(string path);
 };

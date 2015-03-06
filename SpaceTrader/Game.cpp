@@ -12,7 +12,7 @@ Game::~Game() {
 
 void Game::Run() {
 	if (Init())
-		GameLoop2();
+		GameLoop3();
 	SDL_DestroyWindow(window);
 	SDL_Quit();
 }
@@ -47,15 +47,16 @@ bool Game::Init() {
 		return false;
 	}
 	
-	background = LoadTexture("2.png");
-	
+	backgrounds[0] = LoadTexture("2.png");
+	backgrounds[1] = LoadTexture("3.png");
+	currentBackground = 0;
 	return true;
 }
 
 void Game::GameLoop() {
 	while (!quit) {
 		HandleInput();
-		Update();
+		Update(0);
 		Render();
 	}
 }
@@ -70,7 +71,7 @@ void Game::GameLoop2() {
 		loops = 0;
 		while (SDL_GetTicks() > next_game_tick && loops < MAX_FRAMESKIP) {
 			HandleInput();
-			Update();
+			Update(0);
 			
 			next_game_tick += SKIP_TICKS;
 			loops++;
@@ -80,6 +81,45 @@ void Game::GameLoop2() {
 		Render();
 		fps_frames++;
 
+		if (fps_lasttime < SDL_GetTicks() - 1000.0) {
+			fps_lasttime = SDL_GetTicks();
+			fps_current = fps_frames;
+			printf("updates/s: %i ,", updates);
+			printf("fps: %i\n", fps_current);
+			updates = 0;
+			fps_frames = 0;
+		}
+	}
+}
+
+void Game::GameLoop3() {
+	float t = 0.0;
+	const float dt = 0.01;
+	float currentTime = SDL_GetTicks();
+	float accumulator = 0.0;
+	int updates = 0;
+
+	while (!quit) {
+		HandleInput();
+
+		Uint32 newTime = SDL_GetTicks();
+		float frameTime = newTime - currentTime;
+		const Uint32 maxFrameTime = 1000; // 1 sec per frame is the slowest we allow
+		if (frameTime > maxFrameTime)
+			frameTime = maxFrameTime;
+		
+		currentTime = newTime;
+		accumulator += frameTime;
+		while (accumulator >= dt) {
+		        Update(dt); // simulate a "frame" of logic at a different FPS than we simulate a frame of rendering
+		        accumulator -= dt;
+				t += dt;
+				updates++;
+		}
+		
+		Render();
+		fps_frames++;
+		
 		if (fps_lasttime < SDL_GetTicks() - 1000.0) {
 			fps_lasttime = SDL_GetTicks();
 			fps_current = fps_frames;
@@ -105,10 +145,10 @@ void Game::HandleInput() {
 			switch (e.key.keysym.sym)
 			{
 			case SDLK_1:
-				background = LoadTexture("3.png");
+				currentBackground = 1;
 				break;
 			case SDLK_2:
-				background = LoadTexture("2.png");
+				currentBackground = 0;
 				break;
 			case SDLK_q:
 			case SDLK_ESCAPE:
@@ -119,7 +159,7 @@ void Game::HandleInput() {
 	}
 }
 
-void Game::Update() {
+void Game::Update(float dt) {
 	
 }
 
@@ -127,7 +167,7 @@ void Game::Render() {
 	//Clear screen
 	SDL_RenderClear(renderer);
 	//Render texture to screen
-	SDL_RenderCopy(renderer, background.get(), NULL, NULL);
+	SDL_RenderCopy(renderer, backgrounds[currentBackground].get(), NULL, NULL);
 	//Update screen
 	SDL_RenderPresent(renderer);
 }
