@@ -50,6 +50,8 @@ bool Game::Init() {
 	backgrounds[0] = LoadTexture("2.png");
 	backgrounds[1] = LoadTexture("3.png");
 	currentBackground = 0;
+	shipTexture = LoadTexture("Planet3.png");
+	ship = new Ship(shipTexture.get());
 	return true;
 }
 
@@ -94,7 +96,7 @@ void Game::GameLoop2() {
 
 void Game::GameLoop3() {
 	float t = 0.0;
-	const float dt = 0.01;
+	const float dt = 16.6666;
 	float currentTime = SDL_GetTicks();
 	float accumulator = 0.0;
 	int updates = 0;
@@ -160,7 +162,7 @@ void Game::HandleInput() {
 }
 
 void Game::Update(float dt) {
-	
+	ship->Update(dt);
 }
 
 void Game::Render() {
@@ -168,12 +170,14 @@ void Game::Render() {
 	SDL_RenderClear(renderer);
 	//Render texture to screen
 	SDL_RenderCopy(renderer, backgrounds[currentBackground].get(), NULL, NULL);
+
+	ship->Render(renderer);
+
 	//Update screen
 	SDL_RenderPresent(renderer);
 }
 
-TexturePtr Game::LoadTexture(std::string path)
-{
+TexturePtr Game::LoadTexture(std::string path) {
 	//The final texture
 	TexturePtr newTexture = NULL;
 

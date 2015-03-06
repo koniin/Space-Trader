@@ -21,9 +21,15 @@
     <ClCompile Include="Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Ship.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ship.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -32,6 +38,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="3.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Planet3.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

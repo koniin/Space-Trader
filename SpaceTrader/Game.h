@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string>
 #include <memory>
+#include "Ship.h"
 
 using namespace std;
 
@@ -26,6 +27,8 @@ private:
 	const unsigned int TICKS_PER_SECOND = 50;
 	const unsigned int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
 	const unsigned int MAX_FRAMESKIP = 10;
+	
+	Ship* ship;
 
 	Uint32 fps_lasttime; //the last recorded time.
 	Uint32 fps_current; //the current FPS.
@@ -40,6 +43,8 @@ private:
 	TexturePtr background;
 	TexturePtr backgrounds[2];
 	
+	TexturePtr shipTexture;
+
 	SDL_Renderer* renderer = NULL;
 	SDL_Texture* texture = NULL;
 
