@@ -2,6 +2,7 @@
 
 using namespace std;
 
+
 Game::Game() {
 	printf("Starting game \n");
 }
@@ -11,7 +12,7 @@ Game::~Game() {
 
 void Game::Run() {
 	if (Init())
-		GameLoop();
+		GameLoop2();
 	SDL_DestroyWindow(window);
 	SDL_Quit();
 }
@@ -54,7 +55,39 @@ bool Game::Init() {
 void Game::GameLoop() {
 	while (!quit) {
 		HandleInput();
+		Update();
 		Render();
+	}
+}
+
+void Game::GameLoop2() {
+	fps_lasttime = SDL_GetTicks();
+	Uint32 next_game_tick = SDL_GetTicks();
+	fps_frames = 0;
+	int loops;
+	int updates = 0;
+	while (!quit) {
+		loops = 0;
+		while (SDL_GetTicks() > next_game_tick && loops < MAX_FRAMESKIP) {
+			HandleInput();
+			Update();
+			
+			next_game_tick += SKIP_TICKS;
+			loops++;
+			updates++;
+		}
+
+		Render();
+		fps_frames++;
+
+		if (fps_lasttime < SDL_GetTicks() - 1000.0) {
+			fps_lasttime = SDL_GetTicks();
+			fps_current = fps_frames;
+			printf("updates/s: %i ,", updates);
+			printf("fps: %i\n", fps_current);
+			updates = 0;
+			fps_frames = 0;
+		}
 	}
 }
 
@@ -84,6 +117,10 @@ void Game::HandleInput() {
 			}
 		}
 	}
+}
+
+void Game::Update() {
+	
 }
 
 void Game::Render() {
