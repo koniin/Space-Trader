@@ -20,10 +20,11 @@ private:
 	int directionX;
 	int directionY;
 	int speed;
+	int angleAdjustment;
 	float precalc_speed;
 	float posX;
 	float posY;
-	double degrees;
+	double angle;
 	SDL_Texture* texture;
 	SDL_Rect sourceRect;
 
