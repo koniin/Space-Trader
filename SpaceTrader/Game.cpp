@@ -157,11 +157,21 @@ void Game::HandleInput() {
 			case SDLK_a:
 				ship->HandleEvent(MOVE_LEFT);
 				break;
+			case SDLK_w:
+				ship->HandleEvent(ACCELERATE);
+				break;
+			case SDLK_s:
+				ship->HandleEvent(DECELERATE);
+				break;
 			case SDLK_q:
 			case SDLK_ESCAPE:
 				quit = true;
 				break;
 			}
+		}
+		else if (e.type == SDL_KEYUP)
+		{
+
 		}
 	}
 }

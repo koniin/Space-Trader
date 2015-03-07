@@ -17,11 +17,16 @@ public:
 private:
 	int speedForwardMax;
 	int speedBackwardMax;
-	int direction;
+	int directionX;
+	int directionY;
 	int speed;
 	float precalc_speed;
 	float posX;
+	float posY;
+	double degrees;
 	SDL_Texture* texture;
 	SDL_Rect sourceRect;
+
+	void setSpeed(int newSpeed);
 };
 
