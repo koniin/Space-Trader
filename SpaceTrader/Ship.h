@@ -15,9 +15,12 @@ public:
 	void Update(float dt);
 	void HandleEvent(Event e);
 private:
-	float velocityMax = 0.15;
-	float posX = 0.0;
-	float velocityX = 0.0;
+	int speedForwardMax;
+	int speedBackwardMax;
+	int direction;
+	int speed;
+	float precalc_speed;
+	float posX;
 	SDL_Texture* texture;
 	SDL_Rect sourceRect;
 };

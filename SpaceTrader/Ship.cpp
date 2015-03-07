@@ -8,6 +8,12 @@ Ship::Ship(SDL_Texture* tex) {
 	sourceRect.y = 100;
 	sourceRect.w = 50;
 	sourceRect.h = 19;
+	speed = 0;
+	precalc_speed = 0.0f;
+	speedForwardMax = 15;
+	speedBackwardMax = 10;
+	direction = 0;
+	posX = 0.0f;
 }
 
 Ship::~Ship()
@@ -20,20 +26,31 @@ void Ship::Render(SDL_Renderer* renderer) {
 
 void Ship::HandleEvent(Event e) {
 	if (e == MOVE_RIGHT) {
-		velocityX += 0.05;
-		velocityX = std::min(velocityX, velocityMax);
+		if (speed > 0 && direction == -1) {
+			speed -= 5;
+		} else {
+			speed += 5;
+			direction = 1;
+		}
+		speed = std::min(speed, speedForwardMax);
 	}
 	if (e == MOVE_LEFT) {
-		velocityX -= 0.05;
-		velocityX = std::max(velocityX, -velocityMax);
+		if(speed > 0 && direction == 1) {
+			speed -= 5;
+		} else {
+			speed += 5;
+			direction = -1;
+		}
+		speed = std::min(speed, speedBackwardMax);
 	}
+	precalc_speed = (speed / 100.f);
 }
 
 // Handle velocity different, but max and min velocity in update and handle constant deceleration?? 
 // or maybe just keep it as "gears" as it is, in constant increase/decrease no need to hold keys to keep it less arcadey
 
 void Ship::Update(float dt) {
-	posX += dt * velocityX;
+	posX += dt * precalc_speed * direction;
 	sourceRect.x = posX;
 
 	int xMax = 640 - sourceRect.w;
