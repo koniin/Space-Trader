@@ -151,6 +151,12 @@ void Game::HandleInput() {
 			case SDLK_2:
 				currentBackground = 0;
 				break;
+			case SDLK_d:
+				ship->HandleEvent(MOVE_RIGHT);
+				break;
+			case SDLK_a:
+				ship->HandleEvent(MOVE_LEFT);
+				break;
 			case SDLK_q:
 			case SDLK_ESCAPE:
 				quit = true;

@@ -76,6 +76,7 @@
   <ItemGroup>
     <ClInclude Include="Game.h" />
     <ClInclude Include="Ship.h" />
+    <ClInclude Include="Events.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="2.png">

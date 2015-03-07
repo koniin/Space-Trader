@@ -6,6 +6,7 @@
 #include <string>
 #include <memory>
 #include "Ship.h"
+#include "Events.h"
 
 using namespace std;
 
