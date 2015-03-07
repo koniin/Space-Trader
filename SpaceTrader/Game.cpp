@@ -50,7 +50,7 @@ bool Game::Init() {
 	backgrounds[0] = LoadTexture("2.png");
 	backgrounds[1] = LoadTexture("3.png");
 	currentBackground = 0;
-	shipTexture = LoadTexture("Planet3.png");
+	shipTexture = LoadTexture("cruiser.png");
 	ship = new Ship(shipTexture.get());
 	return true;
 }
@@ -95,15 +95,13 @@ void Game::GameLoop2() {
 }
 
 void Game::GameLoop3() {
-	float t = 0.0;
-	const float dt = 16.6666;
+	//float t = 0.0;
+	const float dt = 0.16666; // 6000 updates/s
 	float currentTime = SDL_GetTicks();
 	float accumulator = 0.0;
 	int updates = 0;
 
-	while (!quit) {
-		HandleInput();
-
+	while (!quit) {		
 		Uint32 newTime = SDL_GetTicks();
 		float frameTime = newTime - currentTime;
 		const Uint32 maxFrameTime = 1000; // 1 sec per frame is the slowest we allow
@@ -113,10 +111,11 @@ void Game::GameLoop3() {
 		currentTime = newTime;
 		accumulator += frameTime;
 		while (accumulator >= dt) {
-		        Update(dt); // simulate a "frame" of logic at a different FPS than we simulate a frame of rendering
-		        accumulator -= dt;
-				t += dt;
-				updates++;
+			HandleInput();
+		    Update(dt); // simulate a "frame" of logic at a different FPS than we simulate a frame of rendering
+		    accumulator -= dt;
+			//t += dt;
+			updates++;
 		}
 		
 		Render();
