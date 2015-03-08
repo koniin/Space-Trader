@@ -12,9 +12,10 @@ public:
 	Ship(SDL_Texture* texture, SDL_Point* startPoint, shared_ptr<SDL_Point> worldBounds);
 	~Ship();
 
-	void Render(SDL_Renderer* renderer);
+	void Render(SDL_Renderer* renderer, int cameraX, int cameraY);
 	void Update(float dt);
 	void HandleEvent(Event e);
+	SDL_Rect* GetPosInfo();
 private:
 	shared_ptr<SDL_Point> worldBounds;
 	int speedForwardMax;
@@ -26,8 +27,8 @@ private:
 	float precalc_speed;
 	float posX;
 	float posY;
-	float turnSpeed = 0.02f;
-	int speedIncreaseStep = 5;
+	const float turnSpeed = 0.02f;
+	const int speedIncreaseStep = 5;
 	double angle;
 	SDL_Texture* texture;
 	SDL_Rect sourceRect;

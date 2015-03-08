@@ -49,5 +49,11 @@
     <Image Include="cruiser.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="bg.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="dot.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

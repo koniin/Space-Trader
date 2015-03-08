@@ -25,8 +25,10 @@ Ship::~Ship()
 {
 }
 
-void Ship::Render(SDL_Renderer* renderer) {
-	SDL_RenderCopyEx(renderer, texture, NULL, &sourceRect, angle + angleAdjustment, NULL, SDL_FLIP_NONE);
+void Ship::Render(SDL_Renderer* renderer, int cameraX, int cameraY) {
+	// mPosX - camX, mPosY - camY
+	SDL_Rect renderQuad = { sourceRect.x - cameraX, sourceRect.y - cameraY, sourceRect.w, sourceRect.h };
+	SDL_RenderCopyEx(renderer, texture, NULL, &renderQuad, angle + angleAdjustment, NULL, SDL_FLIP_NONE);
 }
 
 void Ship::HandleEvent(Event e) {
@@ -78,4 +80,8 @@ void Ship::KeepInBounds() {
 void Ship::SetSpeed(int newSpeed) {
 	speed = newSpeed;
 	precalc_speed = speed == 0 ? 0.0f : (speed / 100.f);
+}
+
+SDL_Rect* Ship::GetPosInfo() {
+	return &sourceRect;
 }

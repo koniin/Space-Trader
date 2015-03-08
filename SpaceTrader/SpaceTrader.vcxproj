@@ -85,7 +85,13 @@
     <Image Include="3.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
+    <Image Include="bg.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
     <Image Include="cruiser.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="dot.bmp">
       <DeploymentContent>true</DeploymentContent>
     </Image>
     <Image Include="Planet3.png">

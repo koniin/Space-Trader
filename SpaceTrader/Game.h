@@ -6,6 +6,7 @@
 #include <string>
 #include <memory>
 #include <map>
+#include <algorithm>
 #include "Ship.h"
 #include "Events.h"
 
@@ -24,12 +25,16 @@ public:
 private:
 	const int SCREEN_WIDTH = 640;
 	const int SCREEN_HEIGHT = 480;
+	const int LEVEL_WIDTH = 2048;
+	const int LEVEL_HEIGHT = 2048;
 	const char* TITLE = "Space Trader";
 
 	const unsigned int TICKS_PER_SECOND = 50;
 	const unsigned int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
 	const unsigned int MAX_FRAMESKIP = 10;
 	
+	SDL_Rect camera;
+
 	unique_ptr<Ship> ship;
 	shared_ptr<SDL_Point> worldBounds;
 
@@ -59,6 +64,7 @@ private:
 	void GameLoop3();
 	void HandleInput();
 	void Update(float dt);
+	void UpdateCamera();
 	void Render();
 	TexturePtr LoadTexture(string path);
 };

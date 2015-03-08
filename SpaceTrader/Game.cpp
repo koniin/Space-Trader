@@ -2,7 +2,7 @@
 
 Game::Game() 
 	: keysDown() {
-	worldBounds = std::make_shared<SDL_Point>(SDL_Point{ SCREEN_WIDTH, SCREEN_HEIGHT });
+	worldBounds = std::make_shared<SDL_Point>(SDL_Point{ LEVEL_WIDTH, LEVEL_HEIGHT });
 	printf("Starting game \n");
 }
 
@@ -95,6 +95,9 @@ void Game::GameLoop2() {
 
 void Game::GameLoop3() {
 	//float t = 0.0;
+
+	camera = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
+
 	const float dt = 0.16666; // 6000 updates/s
 	float currentTime = SDL_GetTicks();
 	float accumulator = 0.0;
@@ -179,15 +182,28 @@ void Game::Update(float dt) {
 		ship->HandleEvent(it1.second);
 	}
 	ship->Update(dt);
+	UpdateCamera();
+}
+
+
+void Game::UpdateCamera() {
+	SDL_Rect* shipPos = ship->GetPosInfo();
+	camera.x = (shipPos->x + shipPos->w / 2) - SCREEN_WIDTH / 2;
+	camera.y = (shipPos->y + shipPos->h / 2) - SCREEN_HEIGHT / 2;
+	camera.x = std::max(0, std::min(camera.x, LEVEL_WIDTH - camera.w));
+	camera.y = std::max(0, std::min(camera.y, LEVEL_HEIGHT - camera.h));
 }
 
 void Game::Render() {
 	//Clear screen
+	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	SDL_RenderClear(renderer);
-	//Render texture to screen
-	SDL_RenderCopy(renderer, backgrounds[currentBackground].get(), NULL, NULL);
 
-	ship->Render(renderer);
+	//Render background
+	SDL_Rect renderQuad = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
+	SDL_RenderCopy(renderer, backgrounds[currentBackground].get(), &camera, &renderQuad);
+
+	ship->Render(renderer, camera.x, camera.y);
 
 	//Update screen
 	SDL_RenderPresent(renderer);
