@@ -26,7 +26,6 @@ Ship::~Ship()
 }
 
 void Ship::Render(SDL_Renderer* renderer, int cameraX, int cameraY) {
-	// mPosX - camX, mPosY - camY
 	SDL_Rect renderQuad = { sourceRect.x - cameraX, sourceRect.y - cameraY, sourceRect.w, sourceRect.h };
 	SDL_RenderCopyEx(renderer, texture, NULL, &renderQuad, angle + angleAdjustment, NULL, SDL_FLIP_NONE);
 }
