@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string>
 #include <memory>
+#include <map>
 #include "Ship.h"
 #include "Events.h"
 
@@ -29,7 +30,10 @@ private:
 	const unsigned int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
 	const unsigned int MAX_FRAMESKIP = 10;
 	
-	Ship* ship;
+	unique_ptr<Ship> ship;
+	shared_ptr<SDL_Point> worldBounds;
+
+	std::map<SDL_Keycode, Event> keysDown;
 
 	Uint32 fps_lasttime; //the last recorded time.
 	Uint32 fps_current; //the current FPS.

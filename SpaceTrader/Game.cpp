@@ -1,9 +1,8 @@
 #include "Game.h"
 
-using namespace std;
-
-
-Game::Game() {
+Game::Game() 
+	: keysDown() {
+	worldBounds = std::make_shared<SDL_Point>(SDL_Point{ SCREEN_WIDTH, SCREEN_HEIGHT });
 	printf("Starting game \n");
 }
 
@@ -51,7 +50,7 @@ bool Game::Init() {
 	backgrounds[1] = LoadTexture("3.png");
 	currentBackground = 0;
 	shipTexture = LoadTexture("cruiser.png");
-	ship = new Ship(shipTexture.get());
+	ship = make_unique<Ship>(Ship(shipTexture.get(), new SDL_Point{ 100, 100 }, worldBounds));
 	return true;
 }
 
@@ -152,10 +151,10 @@ void Game::HandleInput() {
 				currentBackground = 0;
 				break;
 			case SDLK_d:
-				ship->HandleEvent(MOVE_RIGHT);
+				keysDown[e.key.keysym.sym] = MOVE_RIGHT;
 				break;
 			case SDLK_a:
-				ship->HandleEvent(MOVE_LEFT);
+				keysDown[e.key.keysym.sym] = MOVE_LEFT;
 				break;
 			case SDLK_w:
 				ship->HandleEvent(ACCELERATE);
@@ -169,14 +168,16 @@ void Game::HandleInput() {
 				break;
 			}
 		}
-		else if (e.type == SDL_KEYUP)
-		{
-
+		else if (e.type == SDL_KEYUP) {
+			keysDown.erase(e.key.keysym.sym);
 		}
 	}
 }
 
 void Game::Update(float dt) {
+	for (auto const &it1 : keysDown) {
+		ship->HandleEvent(it1.second);
+	}
 	ship->Update(dt);
 }
 

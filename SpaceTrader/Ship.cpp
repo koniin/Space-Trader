@@ -3,12 +3,12 @@
 #include <algorithm>
 #include <math.h> 
 
-Ship::Ship(SDL_Texture* tex) {
+Ship::Ship(SDL_Texture* tex, SDL_Point* startPoint, shared_ptr<SDL_Point> world) {
 	texture = tex;
-	posX = 100.0f;
-	posY = 100.0f;
-	sourceRect.x = posX;
-	sourceRect.y = posY;
+	posX = startPoint->x;
+	posY = startPoint->y;
+	sourceRect.x = startPoint->x;
+	sourceRect.y = startPoint->x;
 	sourceRect.w = 50;
 	sourceRect.h = 19;
 	speed = 0;
@@ -17,6 +17,8 @@ Ship::Ship(SDL_Texture* tex) {
 	speedBackwardMax = -10;
 	angle = 90.0f;
 	angleAdjustment = -90;
+	startPoint = NULL;
+	worldBounds = world;
 }
 
 Ship::~Ship()
@@ -24,23 +26,23 @@ Ship::~Ship()
 }
 
 void Ship::Render(SDL_Renderer* renderer) {
-	SDL_RenderCopyEx(renderer, texture, NULL, &sourceRect, angle - 90, NULL, SDL_FLIP_NONE);
+	SDL_RenderCopyEx(renderer, texture, NULL, &sourceRect, angle + angleAdjustment, NULL, SDL_FLIP_NONE);
 }
 
 void Ship::HandleEvent(Event e) {
 	if (e == ACCELERATE) {
-		speed += 5;
-		setSpeed(std::min(speed, speedForwardMax));
+		speed += speedIncreaseStep;
+		SetSpeed(std::min(speed, speedForwardMax));
 	}
 	if (e == DECELERATE) {
-		speed -= 5;
-		setSpeed(std::max(speed, speedBackwardMax));
+		speed -= speedIncreaseStep;
+		SetSpeed(std::max(speed, speedBackwardMax));
 	}
 	if (e == MOVE_RIGHT) {
-		angle += 5;
+		angle += turnSpeed;
 	}
 	if (e == MOVE_LEFT) {
-		angle -= 5;
+		angle -= turnSpeed;
 	}
 }
 
@@ -56,20 +58,24 @@ void Ship::Update(float dt) {
 	posY += sin((angleAdjustment + angle) * M_PI / 180) * (precalc_speed * dt);
 	sourceRect.x = posX;
 	sourceRect.y = posY;
-	
-	float clamped = std::max(0, std::min(sourceRect.x, 640 - sourceRect.w));
+
+	KeepInBounds();
+}
+
+void Ship::KeepInBounds() {
+	float clamped = std::max(0, std::min(sourceRect.x, worldBounds.get()->x - sourceRect.w));
 	if (sourceRect.x != (int)clamped) {
-		setSpeed(0);
+		SetSpeed(0);
 		sourceRect.x = clamped;
 	}
-	clamped = std::max(0, std::min(sourceRect.y, 480 - sourceRect.h));
+	clamped = std::max(0, std::min(sourceRect.y, worldBounds.get()->y - sourceRect.h));
 	if (sourceRect.y != (int)clamped) {
-		setSpeed(0);
+		SetSpeed(0);
 		sourceRect.y = clamped;
 	}
 }
 
-void Ship::setSpeed(int newSpeed) {
+void Ship::SetSpeed(int newSpeed) {
 	speed = newSpeed;
 	precalc_speed = speed == 0 ? 0.0f : (speed / 100.f);
 }
