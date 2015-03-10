@@ -3,8 +3,8 @@
 #include <algorithm>
 #include <math.h> 
 
-Ship::Ship(SDL_Texture* tex, SDL_Point* startPoint, shared_ptr<SDL_Point> world) {
-	texture = tex;
+Ship::Ship(SDL_Texture* tex, SDL_Point* startPoint, SDL_Point* world) 
+	: GameObject(tex, world) {
 	posX = startPoint->x;
 	posY = startPoint->y;
 	sourceRect.x = startPoint->x;
@@ -18,11 +18,6 @@ Ship::Ship(SDL_Texture* tex, SDL_Point* startPoint, shared_ptr<SDL_Point> world)
 	angle = 90.0f;
 	angleAdjustment = -90;
 	startPoint = NULL;
-	worldBounds = world;
-}
-
-Ship::~Ship()
-{
 }
 
 void Ship::Render(SDL_Renderer* renderer, int cameraX, int cameraY) {
@@ -64,23 +59,14 @@ void Ship::Update(float dt) {
 }
 
 void Ship::KeepInBounds() {
-	float clamped = std::max(0, std::min(sourceRect.x, worldBounds.get()->x - sourceRect.w));
+	float clamped = std::max(0, std::min(sourceRect.x, worldBounds->x - sourceRect.w));
 	if (sourceRect.x != (int)clamped) {
 		SetSpeed(0);
 		sourceRect.x = clamped;
 	}
-	clamped = std::max(0, std::min(sourceRect.y, worldBounds.get()->y - sourceRect.h));
+	clamped = std::max(0, std::min(sourceRect.y, worldBounds->y - sourceRect.h));
 	if (sourceRect.y != (int)clamped) {
 		SetSpeed(0);
 		sourceRect.y = clamped;
 	}
-}
-
-void Ship::SetSpeed(int newSpeed) {
-	speed = newSpeed;
-	precalc_speed = speed == 0 ? 0.0f : (speed / 100.f);
-}
-
-SDL_Rect* Ship::GetPosInfo() {
-	return &sourceRect;
 }

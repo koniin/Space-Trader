@@ -35,8 +35,8 @@ private:
 	
 	SDL_Rect camera;
 
-	unique_ptr<Ship> ship;
-	shared_ptr<SDL_Point> worldBounds;
+	unique_ptr<GameObject> ship;
+	SDL_Point worldBounds;
 
 	std::map<SDL_Keycode, Event> keysDown;
 

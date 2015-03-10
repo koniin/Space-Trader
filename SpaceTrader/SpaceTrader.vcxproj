@@ -70,13 +70,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Ship.cpp" />
+    <ClCompile Include="Station.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameObject.h" />
     <ClInclude Include="Ship.h" />
     <ClInclude Include="Events.h" />
+    <ClInclude Include="Station.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="2.png">
@@ -85,13 +89,7 @@
     <Image Include="3.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
-    <Image Include="bg.png">
-      <DeploymentContent>true</DeploymentContent>
-    </Image>
     <Image Include="cruiser.png">
-      <DeploymentContent>true</DeploymentContent>
-    </Image>
-    <Image Include="dot.bmp">
       <DeploymentContent>true</DeploymentContent>
     </Image>
     <Image Include="Planet3.png">

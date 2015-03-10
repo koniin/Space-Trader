@@ -2,7 +2,7 @@
 
 Game::Game() 
 	: keysDown() {
-	worldBounds = std::make_shared<SDL_Point>(SDL_Point{ LEVEL_WIDTH, LEVEL_HEIGHT });
+	worldBounds = SDL_Point{ LEVEL_WIDTH, LEVEL_HEIGHT };
 	printf("Starting game \n");
 }
 
@@ -50,7 +50,7 @@ bool Game::Init() {
 	backgrounds[1] = LoadTexture("3.png");
 	currentBackground = 0;
 	shipTexture = LoadTexture("cruiser.png");
-	ship = make_unique<Ship>(Ship(shipTexture.get(), new SDL_Point{ 100, 100 }, worldBounds));
+	ship = unique_ptr<GameObject>{ make_unique<Ship>(Ship(shipTexture.get(), new SDL_Point{ 100, 100 }, &worldBounds))};
 	return true;
 }
 
@@ -187,7 +187,7 @@ void Game::Update(float dt) {
 
 
 void Game::UpdateCamera() {
-	SDL_Rect* shipPos = ship->GetPosInfo();
+	SDL_Rect* shipPos = ship->GetPositionRectangle();
 	camera.x = (shipPos->x + shipPos->w / 2) - SCREEN_WIDTH / 2;
 	camera.y = (shipPos->y + shipPos->h / 2) - SCREEN_HEIGHT / 2;
 	camera.x = std::max(0, std::min(camera.x, LEVEL_WIDTH - camera.w));

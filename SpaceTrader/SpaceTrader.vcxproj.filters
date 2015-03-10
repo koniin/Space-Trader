@@ -24,6 +24,12 @@
     <ClCompile Include="Ship.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Station.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -33,6 +39,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Events.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Station.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -47,12 +59,6 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="cruiser.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="bg.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="dot.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
