@@ -211,17 +211,9 @@ void Game::Render() {
 	SDL_RenderClear(renderer);
 
 	//Render background
-	/*
 	SDL_Rect renderQuad = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
 	SDL_RenderCopy(renderer, backgroundLayers[0].get(), &camera, &renderQuad);
-	*/
-	SDL_Rect renderQuad;
-	renderQuad = { -(camera.x + 100) * 0.5f, -(camera.y + 100) * 0.5f, SCREEN_WIDTH, SCREEN_HEIGHT };
-	SDL_RenderCopy(renderer, backgroundLayers[1].get(), nullptr, &renderQuad);
-
-	renderQuad = { -camera.x * 0.25f, -camera.y * 0.25f, SCREEN_WIDTH, SCREEN_HEIGHT };
-	SDL_RenderCopy(renderer, backgroundLayers[1].get(), nullptr, &renderQuad);
-
+	
 	ship->Render(renderer, camera.x, camera.y);
 	station->Render(renderer, camera.x, camera.y);
 
