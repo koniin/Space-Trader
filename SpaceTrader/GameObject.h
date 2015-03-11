@@ -18,6 +18,8 @@ protected:
 	void SetSpeed(int newSpeed);
 
 	SDL_Point* worldBounds;
+	int angleAdjustment;
+	double angle;
 	int speed = 0;
 	float precalc_speed;
 	SDL_Texture* texture;

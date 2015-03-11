@@ -1,4 +1,6 @@
 #include "Game.h"
+#include "Ship.h"
+#include "Station.h"
 
 Game::Game() 
 	: keysDown() {
@@ -10,13 +12,15 @@ Game::~Game() {
 }
 
 void Game::Run() {
-	if (Init())
+	if (InitSDL()) {
+		Load();
 		GameLoop3();
+	}
 	SDL_DestroyWindow(window);
 	SDL_Quit();
 }
 
-bool Game::Init() {
+bool Game::InitSDL() {
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
 		return false;
@@ -46,11 +50,17 @@ bool Game::Init() {
 		return false;
 	}
 	
-	backgrounds[0] = LoadTexture("2.png");
-	backgrounds[1] = LoadTexture("3.png");
-	currentBackground = 0;
+	return true;
+}
+
+bool Game::Load() {
+	backgroundLayers[0] = LoadTexture("2.png");
+	backgroundLayers[1] = LoadTexture("starfield.png");
 	shipTexture = LoadTexture("cruiser.png");
+	stationTexture = LoadTexture("station.png");
 	ship = unique_ptr<GameObject>{ make_unique<Ship>(Ship(shipTexture.get(), new SDL_Point{ 100, 100 }, &worldBounds))};
+	station = unique_ptr<GameObject>{ make_unique<Station>(Station(stationTexture.get(), new SDL_Point{ 400, 400 }, &worldBounds))};
+
 	return true;
 }
 
@@ -147,12 +157,6 @@ void Game::HandleInput() {
 			//Select surfaces based on key press
 			switch (e.key.keysym.sym)
 			{
-			case SDLK_1:
-				currentBackground = 1;
-				break;
-			case SDLK_2:
-				currentBackground = 0;
-				break;
 			case SDLK_d:
 				keysDown[e.key.keysym.sym] = MOVE_RIGHT;
 				break;
@@ -187,6 +191,8 @@ void Game::Update(float dt) {
 		ship->HandleEvent(it1.second);
 	}
 	ship->Update(dt);
+	station->Update(dt);
+
 	UpdateCamera();
 }
 
@@ -201,14 +207,23 @@ void Game::UpdateCamera() {
 
 void Game::Render() {
 	//Clear screen
-	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+	SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
 	SDL_RenderClear(renderer);
 
 	//Render background
+	/*
 	SDL_Rect renderQuad = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
-	SDL_RenderCopy(renderer, backgrounds[currentBackground].get(), &camera, &renderQuad);
+	SDL_RenderCopy(renderer, backgroundLayers[0].get(), &camera, &renderQuad);
+	*/
+	SDL_Rect renderQuad;
+	renderQuad = { -(camera.x + 100) * 0.5f, -(camera.y + 100) * 0.5f, SCREEN_WIDTH, SCREEN_HEIGHT };
+	SDL_RenderCopy(renderer, backgroundLayers[1].get(), nullptr, &renderQuad);
+
+	renderQuad = { -camera.x * 0.25f, -camera.y * 0.25f, SCREEN_WIDTH, SCREEN_HEIGHT };
+	SDL_RenderCopy(renderer, backgroundLayers[1].get(), nullptr, &renderQuad);
 
 	ship->Render(renderer, camera.x, camera.y);
+	station->Render(renderer, camera.x, camera.y);
 
 	//Update screen
 	SDL_RenderPresent(renderer);

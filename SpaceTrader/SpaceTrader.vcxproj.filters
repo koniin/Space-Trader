@@ -61,5 +61,11 @@
     <Image Include="cruiser.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="station.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="starfield.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

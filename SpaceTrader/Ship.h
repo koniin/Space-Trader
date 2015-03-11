@@ -18,12 +18,10 @@ private:
 	int speedBackwardMax;
 	int directionX;
 	int directionY;
-	int angleAdjustment;
 	float posX;
 	float posY;
 	const float turnSpeed = 0.02f;
 	const int speedIncreaseStep = 5;
-	double angle;
 
 	void KeepInBounds();
 };

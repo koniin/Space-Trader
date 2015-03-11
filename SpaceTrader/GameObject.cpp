@@ -3,6 +3,8 @@
 GameObject::GameObject(SDL_Texture* tex, SDL_Point* world)
 	: texture(tex),
 	worldBounds(world) {
+	angle = 90.0f;
+	angleAdjustment = -90;
 }
 
 

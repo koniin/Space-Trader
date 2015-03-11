@@ -7,8 +7,7 @@
 #include <memory>
 #include <map>
 #include <algorithm>
-#include "Ship.h"
-#include "Events.h"
+#include "GameObject.h"
 
 using namespace std;
 
@@ -34,31 +33,29 @@ private:
 	const unsigned int MAX_FRAMESKIP = 10;
 	
 	SDL_Rect camera;
-
-	unique_ptr<GameObject> ship;
 	SDL_Point worldBounds;
 
+	unique_ptr<GameObject> ship;
+	unique_ptr<GameObject> station;
+	
 	std::map<SDL_Keycode, Event> keysDown;
 
 	Uint32 fps_lasttime; //the last recorded time.
 	Uint32 fps_current; //the current FPS.
 	Uint32 fps_frames; //frames passed since the last recorded fps.
 
-	short currentBackground;
-
 	bool quit = false;
 	//The window we'll be rendering to
 	SDL_Window* window;
-	// Background
-	TexturePtr background;
-	TexturePtr backgrounds[2];
-	
+	TexturePtr backgroundLayers[2];
 	TexturePtr shipTexture;
+	TexturePtr stationTexture;
 
 	SDL_Renderer* renderer = NULL;
 	SDL_Texture* texture = NULL;
 
-	bool Init();
+	bool InitSDL();
+	bool Load();
 	void GameLoop();
 	void GameLoop2();
 	void GameLoop3();

@@ -11,5 +11,7 @@ public:
 	void Render(SDL_Renderer* renderer, int cameraX, int cameraY);
 	void Update(float dt);
 	void HandleEvent(Event e);
+private:
+	const float turnSpeed = 0.0005f;
 };
 
