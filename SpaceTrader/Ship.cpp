@@ -49,7 +49,7 @@ float clamp(float n, float lower, float upper) {
 	return std::max(lower, std::min(n, upper));
 }
 
-void Ship::Update(float dt) {
+void Ship::Update(float dt) {	
 	posX += cos((angleAdjustment + angle) * M_PI / 180) * (precalc_speed * dt);
 	posY += sin((angleAdjustment + angle) * M_PI / 180) * (precalc_speed * dt);
 	sourceRect.x = posX;

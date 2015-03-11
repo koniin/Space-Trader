@@ -24,7 +24,6 @@ private:
 	const float turnSpeed = 0.02f;
 	const int speedIncreaseStep = 5;
 	double angle;
-	SDL_Rect sourceRect;
 
 	void KeepInBounds();
 };

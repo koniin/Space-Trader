@@ -165,7 +165,12 @@ void Game::HandleInput() {
 			case SDLK_s:
 				ship->HandleEvent(DECELERATE);
 				break;
+			case SDLK_e:
+				ship->HandleEvent(STRAFE_RIGHT);
+				break;
 			case SDLK_q:
+				ship->HandleEvent(STRAFE_LEFT);
+				break;
 			case SDLK_ESCAPE:
 				quit = true;
 				break;
