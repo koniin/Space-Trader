@@ -54,6 +54,7 @@ bool Game::InitSDL() {
 }
 
 bool Game::Load() {
+	statistics = make_unique<Statistics>(Statistics());
 	backgroundLayers[0] = LoadTexture("2.png");
 	backgroundLayers[1] = LoadTexture("starfield.png");
 	shipTexture = LoadTexture("cruiser.png");
@@ -107,11 +108,9 @@ void Game::GameLoop3() {
 	//float t = 0.0;
 
 	camera = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
-
 	const float dt = 0.16666; // 6000 updates/s
 	float currentTime = SDL_GetTicks();
 	float accumulator = 0.0;
-	int updates = 0;
 
 	while (!quit) {		
 		Uint32 newTime = SDL_GetTicks();
@@ -127,20 +126,12 @@ void Game::GameLoop3() {
 		    Update(dt); // simulate a "frame" of logic at a different FPS than we simulate a frame of rendering
 		    accumulator -= dt;
 			//t += dt;
-			updates++;
+			statistics->IncreaseUpdates();
 		}
 		
 		Render();
-		fps_frames++;
-		
-		if (fps_lasttime < SDL_GetTicks() - 1000.0) {
-			fps_lasttime = SDL_GetTicks();
-			fps_current = fps_frames;
-			printf("updates/s: %i ,", updates);
-			printf("fps: %i\n", fps_current);
-			updates = 0;
-			fps_frames = 0;
-		}
+		statistics->IncreaseFrames();
+		statistics->Log();
 	}
 }
 

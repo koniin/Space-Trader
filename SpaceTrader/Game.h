@@ -8,6 +8,7 @@
 #include <map>
 #include <algorithm>
 #include "GameObject.h"
+#include "Statistics.h"
 
 using namespace std;
 
@@ -35,6 +36,7 @@ private:
 	SDL_Rect camera;
 	SDL_Point worldBounds;
 
+	unique_ptr<Statistics> statistics;
 	unique_ptr<GameObject> ship;
 	unique_ptr<GameObject> station;
 	
