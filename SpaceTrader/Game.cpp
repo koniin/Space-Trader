@@ -15,8 +15,16 @@ void Game::Run() {
 	if (InitSDL()) {
 		Load();
 		GameLoop3();
-	}
+	} 
+
+	TTF_CloseFont(font);
+	font = NULL;
+	//SDL_DestroyRenderer(renderer);  // slow ?
 	SDL_DestroyWindow(window);
+	window = NULL;
+	renderer = NULL;
+	TTF_Quit();
+	IMG_Quit();
 	SDL_Quit();
 }
 
@@ -49,11 +57,18 @@ bool Game::InitSDL() {
 		printf("SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError());
 		return false;
 	}
-	
+
+	//Initialize SDL_ttf
+	if (TTF_Init() == -1) {
+		printf("SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError());
+		return false;
+	}
+
 	return true;
 }
 
 bool Game::Load() {
+	font = LoadFont("ABSTRACT.ttf");
 	statistics = make_unique<Statistics>(Statistics());
 	backgroundLayers[0] = LoadTexture("2.png");
 	backgroundLayers[1] = LoadTexture("starfield.png");
@@ -177,6 +192,7 @@ void Game::HandleInput() {
 	}
 }
 
+bool visited = false;
 void Game::Update(float dt) {
 	for (auto const &it1 : keysDown) {
 		ship->HandleEvent(it1.second);
@@ -184,6 +200,11 @@ void Game::Update(float dt) {
 	ship->Update(dt);
 	station->Update(dt);
 
+	if (!visited && SDL_HasIntersection(ship->GetPositionRectangle(), station->GetPositionRectangle())) {
+		score+=10;
+		visited = true;
+	}
+	
 	UpdateCamera();
 }
 
@@ -208,8 +229,36 @@ void Game::Render() {
 	ship->Render(renderer, camera.x, camera.y);
 	station->Render(renderer, camera.x, camera.y);
 
+	RenderText("Score:" + std::to_string(score));
+
 	//Update screen
 	SDL_RenderPresent(renderer);
+}
+
+void Game::RenderText(string text) {
+	//Render text surface
+	SDL_Color textColor = { 93, 149, 212 };
+	SDL_Surface* textSurface = TTF_RenderText_Solid(font, text.c_str(), textColor);
+	if (textSurface == NULL) {
+		printf("Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError());
+	}
+	else {
+		//Create texture from surface pixels
+		SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, textSurface);
+		if (texture == NULL) {
+			printf("Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError());
+		} else {
+			//Get image dimensions
+			// SDL_Rect* sourceRect = ship->GetPositionRectangle();
+			/*SDL_Rect renderQuad = { sourceRect->x - camera.x, sourceRect->y - camera.y - sourceRect->h, sourceRect->w, sourceRect->h };*/
+			SDL_Rect renderQuad = { 10, SCREEN_HEIGHT - 30, 140, 20 };
+			SDL_RenderCopyEx(renderer, texture, NULL, &renderQuad, NULL, NULL, SDL_FLIP_NONE);
+			
+		}
+
+		//Get rid of old surface
+		SDL_FreeSurface(textSurface);
+	}
 }
 
 TexturePtr Game::LoadTexture(std::string path) {
@@ -233,4 +282,14 @@ TexturePtr Game::LoadTexture(std::string path) {
 	}
 
 	return newTexture;
+}
+
+TTF_Font* Game::LoadFont(string path) {
+	//Open the font
+	font = TTF_OpenFont(path.c_str(), 28);
+	if (font == NULL) {
+		printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
+		return NULL;
+	}
+	return font;
 }

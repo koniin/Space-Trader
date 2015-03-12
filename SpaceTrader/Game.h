@@ -2,6 +2,7 @@
 
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_ttf.h>
 #include <stdio.h>
 #include <string>
 #include <memory>
@@ -28,7 +29,6 @@ private:
 	const int LEVEL_WIDTH = 2048;
 	const int LEVEL_HEIGHT = 2048;
 	const char* TITLE = "Space Trader";
-
 	const unsigned int TICKS_PER_SECOND = 50;
 	const unsigned int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
 	const unsigned int MAX_FRAMESKIP = 10;
@@ -40,6 +40,8 @@ private:
 	unique_ptr<GameObject> ship;
 	unique_ptr<GameObject> station;
 	
+	int score = 0;
+
 	std::map<SDL_Keycode, Event> keysDown;
 
 	Uint32 fps_lasttime; //the last recorded time.
@@ -52,7 +54,8 @@ private:
 	TexturePtr backgroundLayers[2];
 	TexturePtr shipTexture;
 	TexturePtr stationTexture;
-
+	
+	TTF_Font* font = NULL;
 	SDL_Renderer* renderer = NULL;
 	SDL_Texture* texture = NULL;
 
@@ -65,6 +68,8 @@ private:
 	void Update(float dt);
 	void UpdateCamera();
 	void Render();
+	void RenderText(string text);
 	TexturePtr LoadTexture(string path);
+	TTF_Font* LoadFont(string path);
 };
 

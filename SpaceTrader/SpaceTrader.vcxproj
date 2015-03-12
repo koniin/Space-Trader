@@ -39,8 +39,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Code\SDL\SDL2_image-2.0.0\include;C:\Code\SDL\SDL2-2.0.3\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Code\SDL\SDL2_image-2.0.0\lib\x86;C:\Code\SDL\SDL2-2.0.3\lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Code\SDL\SDL2_ttf-2.0.12\include;C:\Code\SDL\SDL2_image-2.0.0\include;C:\Code\SDL\SDL2-2.0.3\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Code\SDL\SDL2_ttf-2.0.12\lib\x86;C:\Code\SDL\SDL2_image-2.0.0\lib\x86;C:\Code\SDL\SDL2-2.0.3\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -50,7 +50,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -103,6 +103,12 @@
     <Image Include="station.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="8_BIT_WONDER.TTF" />
+    <Font Include="ABSTRACT.TTF">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
+    </Font>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
