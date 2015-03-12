@@ -201,7 +201,7 @@ void Game::Update(float dt) {
 	station->Update(dt);
 
 	if (!visited && SDL_HasIntersection(ship->GetPositionRectangle(), station->GetPositionRectangle())) {
-		score+=10;
+		cargo++;
 		visited = true;
 	}
 	
@@ -229,7 +229,7 @@ void Game::Render() {
 	ship->Render(renderer, camera.x, camera.y);
 	station->Render(renderer, camera.x, camera.y);
 
-	RenderText("Score:" + std::to_string(score));
+	RenderText("Cargo: " + std::to_string(cargo));
 
 	//Update screen
 	SDL_RenderPresent(renderer);
@@ -248,12 +248,8 @@ void Game::RenderText(string text) {
 		if (texture == NULL) {
 			printf("Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError());
 		} else {
-			//Get image dimensions
-			// SDL_Rect* sourceRect = ship->GetPositionRectangle();
-			/*SDL_Rect renderQuad = { sourceRect->x - camera.x, sourceRect->y - camera.y - sourceRect->h, sourceRect->w, sourceRect->h };*/
-			SDL_Rect renderQuad = { 10, SCREEN_HEIGHT - 30, 140, 20 };
+			SDL_Rect renderQuad = { 10, SCREEN_HEIGHT - textSurface->h * 1.5f, textSurface->w, textSurface->h };
 			SDL_RenderCopyEx(renderer, texture, NULL, &renderQuad, NULL, NULL, SDL_FLIP_NONE);
-			
 		}
 
 		//Get rid of old surface
@@ -286,7 +282,7 @@ TexturePtr Game::LoadTexture(std::string path) {
 
 TTF_Font* Game::LoadFont(string path) {
 	//Open the font
-	font = TTF_OpenFont(path.c_str(), 28);
+	font = TTF_OpenFont(path.c_str(), 8);
 	if (font == NULL) {
 		printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
 		return NULL;

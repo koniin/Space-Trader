@@ -40,7 +40,7 @@ private:
 	unique_ptr<GameObject> ship;
 	unique_ptr<GameObject> station;
 	
-	int score = 0;
+	int cargo = 0;
 
 	std::map<SDL_Keycode, Event> keysDown;
 
