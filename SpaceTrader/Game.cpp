@@ -192,7 +192,6 @@ void Game::HandleInput() {
 	}
 }
 
-bool visited = false;
 void Game::Update(float dt) {
 	for (auto const &it1 : keysDown) {
 		ship->HandleEvent(it1.second);
@@ -200,14 +199,18 @@ void Game::Update(float dt) {
 	ship->Update(dt);
 	station->Update(dt);
 
-	if (!visited && SDL_HasIntersection(ship->GetPositionRectangle(), station->GetPositionRectangle())) {
-		cargo++;
-		visited = true;
-	}
+	CheckCollisions();
 	
 	UpdateCamera();
 }
 
+bool global_dirt_visited = false;
+void Game::CheckCollisions() {
+	if (!global_dirt_visited && SDL_HasIntersection(ship->GetPositionRectangle(), station->GetPositionRectangle())) {
+		cargo++;
+		global_dirt_visited = true;
+	}
+}
 
 void Game::UpdateCamera() {
 	SDL_Rect* shipPos = ship->GetPositionRectangle();

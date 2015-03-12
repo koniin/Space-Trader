@@ -66,6 +66,7 @@ private:
 	void GameLoop3();
 	void HandleInput();
 	void Update(float dt);
+	void CheckCollisions();
 	void UpdateCamera();
 	void Render();
 	void RenderText(string text);
