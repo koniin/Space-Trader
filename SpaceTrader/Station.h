@@ -11,7 +11,9 @@ public:
 	void Render(SDL_Renderer* renderer, int cameraX, int cameraY);
 	void Update(float dt);
 	void HandleEvent(Event e);
+	void Collide(GameObject* gameObject);
 private:
 	const float turnSpeed = 0.0005f;
+	bool visited = false;
 };
 

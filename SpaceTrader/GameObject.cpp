@@ -7,7 +7,6 @@ GameObject::GameObject(SDL_Texture* tex, SDL_Point* world)
 	angleAdjustment = -90;
 }
 
-
 GameObject::~GameObject() {
 }
 
@@ -20,4 +19,16 @@ SDL_Rect* GameObject::GetPositionRectangle() {
 void GameObject::SetSpeed(int newSpeed) {
 	speed = newSpeed;
 	precalc_speed = speed == 0 ? 0.0f : (speed / 100.f);
+}
+
+void GameObject::Destroy() { 
+	destroyed = true;
+}
+
+bool GameObject::IsDestroyed() {
+	return destroyed;
+}
+
+GameObject::Type GameObject::GetType() {
+	return gameObjectType;
 }

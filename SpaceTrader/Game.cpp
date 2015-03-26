@@ -74,7 +74,7 @@ bool Game::Load() {
 	backgroundLayers[1] = LoadTexture("starfield.png");
 	shipTexture = LoadTexture("cruiser.png");
 	stationTexture = LoadTexture("station.png");
-	ship = unique_ptr<GameObject>{ make_unique<Ship>(Ship(shipTexture.get(), new SDL_Point{ 100, 100 }, &worldBounds))};
+	ship = unique_ptr<Ship>{ make_unique<Ship>(Ship(shipTexture.get(), new SDL_Point{ 100, 100 }, &worldBounds))};
 	station = unique_ptr<GameObject>{ make_unique<Station>(Station(stationTexture.get(), new SDL_Point{ 400, 400 }, &worldBounds))};
 
 	return true;
@@ -204,11 +204,10 @@ void Game::Update(float dt) {
 	UpdateCamera();
 }
 
-bool global_dirt_visited = false;
 void Game::CheckCollisions() {
-	if (!global_dirt_visited && SDL_HasIntersection(ship->GetPositionRectangle(), station->GetPositionRectangle())) {
-		cargo++;
-		global_dirt_visited = true;
+	if (!station->IsDestroyed() && SDL_HasIntersection(ship->GetPositionRectangle(), station->GetPositionRectangle())) {
+		station->Collide(ship.get());
+		ship->Collide(station.get());
 	}
 }
 
@@ -232,7 +231,7 @@ void Game::Render() {
 	ship->Render(renderer, camera.x, camera.y);
 	station->Render(renderer, camera.x, camera.y);
 
-	RenderText("Cargo: " + std::to_string(cargo));
+	RenderText("Cargo: " + std::to_string(ship->GetCargo()));
 
 	//Update screen
 	SDL_RenderPresent(renderer);

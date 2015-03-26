@@ -9,6 +9,7 @@
 #include <map>
 #include <algorithm>
 #include "GameObject.h"
+#include "Ship.h"
 #include "Statistics.h"
 
 using namespace std;
@@ -25,7 +26,7 @@ public:
 
 private:
 	const int SCREEN_WIDTH = 640;
-	const int SCREEN_HEIGHT = 480;
+	const int SCREEN_HEIGHT = 360;
 	const int LEVEL_WIDTH = 2048;
 	const int LEVEL_HEIGHT = 2048;
 	const char* TITLE = "Space Trader";
@@ -37,11 +38,9 @@ private:
 	SDL_Point worldBounds;
 
 	unique_ptr<Statistics> statistics;
-	unique_ptr<GameObject> ship;
+	unique_ptr<Ship> ship;
 	unique_ptr<GameObject> station;
 	
-	int cargo = 0;
-
 	std::map<SDL_Keycode, Event> keysDown;
 
 	Uint32 fps_lasttime; //the last recorded time.

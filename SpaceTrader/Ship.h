@@ -2,6 +2,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <memory>
+#include <string>
 #include "Events.h"
 #include "GameObject.h"
 
@@ -13,11 +14,14 @@ public:
 	void Render(SDL_Renderer* renderer, int cameraX, int cameraY);
 	void Update(float dt);
 	void HandleEvent(Event e);
+	void Collide(GameObject* gameObject);
+	const int GetCargo();
 private:
 	int speedForwardMax;
 	int speedBackwardMax;
 	int directionX;
 	int directionY;
+	int cargo = 0;
 	float posX;
 	float posY;
 	const float turnSpeed = 0.02f;

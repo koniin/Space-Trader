@@ -18,6 +18,7 @@ Ship::Ship(SDL_Texture* tex, SDL_Point* startPoint, SDL_Point* world)
 	angle = 90.0f;
 	angleAdjustment = -90;
 	startPoint = NULL;
+	gameObjectType = GameObject::Type::Player;
 }
 
 void Ship::Render(SDL_Renderer* renderer, int cameraX, int cameraY) {
@@ -42,12 +43,13 @@ void Ship::HandleEvent(Event e) {
 	}
 }
 
+void Ship::Collide(GameObject* gameObject) {
+	if (gameObject->GetType() == GameObject::Type::Station)
+		cargo++;
+}
+
 // Handle velocity different, but max and min velocity in update and handle constant deceleration?? 
 // or maybe just keep it as "gears" as it is, in constant increase/decrease no need to hold keys to keep it less arcadey
-
-float clamp(float n, float lower, float upper) {
-	return std::max(lower, std::min(n, upper));
-}
 
 void Ship::Update(float dt) {	
 	posX += cos((angleAdjustment + angle) * M_PI / 180) * (precalc_speed * dt);
@@ -69,4 +71,8 @@ void Ship::KeepInBounds() {
 		SetSpeed(0);
 		sourceRect.y = clamped;
 	}
+}
+
+const int Ship::GetCargo() {
+	return cargo;
 }
