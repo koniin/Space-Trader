@@ -252,6 +252,8 @@ void Game::RenderText(string text) {
 		} else {
 			SDL_Rect renderQuad = { 10, SCREEN_HEIGHT - textSurface->h * 1.5f, textSurface->w, textSurface->h };
 			SDL_RenderCopyEx(renderer, texture, NULL, &renderQuad, NULL, NULL, SDL_FLIP_NONE);
+			SDL_DestroyTexture(texture);
+    			texture = NULL;
 		}
 
 		//Get rid of old surface
