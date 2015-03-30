@@ -18,11 +18,11 @@ public:
 	virtual void HandleEvent(Event e) = 0;
 	virtual void Update(float dt);
 	virtual void Render(SDL_Renderer* renderer, int cameraX, int cameraY) = 0;
-	virtual void Collide(GameObject* gameObject) = 0;
+	virtual void Collide(const GameObject* gameObject) = 0;
 	virtual void Destroy();
 	virtual bool IsDestroyed();
-	virtual Type GetType();
-	SDL_Rect* GetPositionRectangle();
+	virtual Type GetType() const;
+	const SDL_Rect* GetPositionRectangle();
 
 protected:
 	void SetSpeed(int newSpeed);

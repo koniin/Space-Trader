@@ -14,7 +14,7 @@ public:
 	void Render(SDL_Renderer* renderer, int cameraX, int cameraY);
 	void Update(float dt);
 	void HandleEvent(Event e);
-	void Collide(GameObject* gameObject);
+	void Collide(const GameObject* gameObject);
 	const int GetCargo();
 private:
 	int speedForwardMax;

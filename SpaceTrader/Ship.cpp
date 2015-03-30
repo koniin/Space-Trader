@@ -43,7 +43,7 @@ void Ship::HandleEvent(Event e) {
 	}
 }
 
-void Ship::Collide(GameObject* gameObject) {
+void Ship::Collide(const GameObject* gameObject) {
 	if (gameObject->GetType() == GameObject::Type::Station)
 		cargo++;
 }

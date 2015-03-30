@@ -12,7 +12,7 @@ GameObject::~GameObject() {
 
 void GameObject::Update(float dt) {}
 
-SDL_Rect* GameObject::GetPositionRectangle() {
+const SDL_Rect* GameObject::GetPositionRectangle() {
 	return &sourceRect;
 }
 
@@ -29,6 +29,6 @@ bool GameObject::IsDestroyed() {
 	return destroyed;
 }
 
-GameObject::Type GameObject::GetType() {
+GameObject::Type GameObject::GetType() const {
 	return gameObjectType;
 }

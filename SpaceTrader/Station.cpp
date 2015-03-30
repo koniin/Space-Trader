@@ -30,7 +30,7 @@ void Station::Update(float dt) {
 void Station::HandleEvent(Event e) {
 }
 
-void Station::Collide(GameObject* gameObject) {
+void Station::Collide(const GameObject* gameObject) {
 	if (gameObject->GetType() == GameObject::Type::Player) {
 		Destroy();
 	}

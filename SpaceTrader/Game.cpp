@@ -212,7 +212,7 @@ void Game::CheckCollisions() {
 }
 
 void Game::UpdateCamera() {
-	SDL_Rect* shipPos = ship->GetPositionRectangle();
+	const SDL_Rect* shipPos = ship->GetPositionRectangle();
 	camera.x = (shipPos->x + shipPos->w / 2) - SCREEN_WIDTH / 2;
 	camera.y = (shipPos->y + shipPos->h / 2) - SCREEN_HEIGHT / 2;
 	camera.x = std::max(0, std::min(camera.x, LEVEL_WIDTH - camera.w));
