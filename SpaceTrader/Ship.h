@@ -26,9 +26,14 @@ private:
 	int resources = 0;
 	float posX;
 	float posY;
-	const float turnSpeed = 0.02f;
+	float speed;
+	const float turnSpeed;
 	const int speedIncreaseStep = 5;
 
 	void KeepInBounds();
+
+	float friction;
+	float velocityX;
+	float velocityY;
 };
 

@@ -174,7 +174,8 @@ void Game::HandleInput() {
 				keysDown[e.key.keysym.sym] = MOVE_LEFT;
 				break;
 			case SDLK_w:
-				ship->HandleEvent(ACCELERATE);
+				keysDown[e.key.keysym.sym] = ACCELERATE;
+				//ship->HandleEvent();
 				break;
 			case SDLK_s:
 				ship->HandleEvent(DECELERATE);

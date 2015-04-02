@@ -3,19 +3,26 @@
 #include <algorithm>
 #include <math.h> 
 
+#define _USE_MATH_DEFINES
+#include <cmath>
+
 Ship::Ship(SDL_Texture* tex, SDL_Point* startPoint, SDL_Point* world) 
-	: GameObject(tex, world) {
+	: GameObject(tex, world),
+	friction(0.98f),
+	velocityX(0.0f),
+	velocityY(0.0f),
+	speed(0.011f),
+	turnSpeed(0.002f) {
 	posX = startPoint->x;
 	posY = startPoint->y;
 	sourceRect.x = startPoint->x;
 	sourceRect.y = startPoint->y;
 	sourceRect.w = 50;
 	sourceRect.h = 19;
-	speed = 0;
 	precalc_speed = 0.0f;
 	speedForwardMax = 15;
 	speedBackwardMax = -10;
-	angle = 90.0f;
+	angle = 0.0f;
 	angleAdjustment = -90;
 	startPoint = NULL;
 	gameObjectType = GameObject::Type::Player;
@@ -27,17 +34,22 @@ void Ship::Render(SDL_Renderer* renderer, int cameraX, int cameraY) {
 }
 
 void Ship::HandleEvent(Event e) {
+	float radians = angle / M_PI * 180;
 	if (e == ACCELERATE) {
-		speed += speedIncreaseStep;
-		SetSpeed(std::min(speed, speedForwardMax));
+		velocityX += std::cos(radians) * speed;
+		velocityY += std::sin(radians) * speed;
+		
+		//velocity.x = std::min(velocity.x, speedForwardMax);
+		//velocity.y = std::min(velocity.y, speedForwardMax);
 	}
+	/*
 	if (e == DECELERATE) {
 		speed -= speedIncreaseStep;
 		SetSpeed(std::max(speed, speedBackwardMax));
 	}
 	if (e == MOVE_RIGHT) {
 		angle += turnSpeed;
-	}
+	}*/
 	if (e == MOVE_LEFT) {
 		angle -= turnSpeed;
 	}
@@ -56,11 +68,27 @@ void Ship::Collide(const GameObject* gameObject) {
 // or maybe just keep it as "gears" as it is, in constant increase/decrease no need to hold keys to keep it less arcadey
 
 void Ship::Update(float dt) {	
+	
+
+	//this.px = this.position.x + 20 * std::cos(radians);
+	//this.py = this.position.y + 20 * std::sin(radians);
+
+	// Apply friction
+	velocityX *= friction;
+	velocityY *= friction;
+
+	// Apply the velocity to the position
+	posX += (velocityX * dt);
+	posY += (velocityY * dt);
+
+	sourceRect.x = posX;
+	sourceRect.y = posY;
+	/* 
 	posX += cos((angleAdjustment + angle) * M_PI / 180) * (precalc_speed * dt);
 	posY += sin((angleAdjustment + angle) * M_PI / 180) * (precalc_speed * dt);
 	sourceRect.x = posX;
 	sourceRect.y = posY;
-
+	*/
 	KeepInBounds();
 }
 
