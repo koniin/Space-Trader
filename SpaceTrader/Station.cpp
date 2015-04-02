@@ -4,7 +4,7 @@
 Station::Station(SDL_Texture* texture, SDL_Point* startPoint, SDL_Point* worldBounds) 
 	: GameObject(texture, worldBounds) {
 	sourceRect.x = startPoint->x;
-	sourceRect.y = startPoint->x;
+	sourceRect.y = startPoint->y;
 	sourceRect.w = 256;
 	sourceRect.h = 256;
 	visited = false;

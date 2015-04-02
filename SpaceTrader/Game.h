@@ -8,6 +8,7 @@
 #include <memory>
 #include <map>
 #include <algorithm>
+#include <vector>
 #include "GameObject.h"
 #include "Ship.h"
 #include "Statistics.h"
@@ -39,7 +40,7 @@ private:
 
 	unique_ptr<Statistics> statistics;
 	unique_ptr<Ship> ship;
-	unique_ptr<GameObject> station;
+	std::vector<std::unique_ptr<GameObject>> stations;
 	
 	std::map<SDL_Keycode, Event> keysDown;
 

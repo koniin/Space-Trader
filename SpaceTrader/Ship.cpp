@@ -8,7 +8,7 @@ Ship::Ship(SDL_Texture* tex, SDL_Point* startPoint, SDL_Point* world)
 	posX = startPoint->x;
 	posY = startPoint->y;
 	sourceRect.x = startPoint->x;
-	sourceRect.y = startPoint->x;
+	sourceRect.y = startPoint->y;
 	sourceRect.w = 50;
 	sourceRect.h = 19;
 	speed = 0;

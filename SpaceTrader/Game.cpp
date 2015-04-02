@@ -75,7 +75,11 @@ bool Game::Load() {
 	shipTexture = LoadTexture("cruiser.png");
 	stationTexture = LoadTexture("station.png");
 	ship = unique_ptr<Ship>{ make_unique<Ship>(Ship(shipTexture.get(), new SDL_Point{ 100, 100 }, &worldBounds))};
-	station = unique_ptr<GameObject>{ make_unique<Station>(Station(stationTexture.get(), new SDL_Point{ 400, 400 }, &worldBounds))};
+
+	stations.push_back(unique_ptr<GameObject>{ make_unique<Station>(Station(stationTexture.get(), new SDL_Point { 100, 500 }, &worldBounds))});
+	stations.push_back(unique_ptr<GameObject>{ make_unique<Station>(Station(stationTexture.get(), new SDL_Point { 1700, 500 }, &worldBounds))});
+	stations.push_back(unique_ptr<GameObject>{ make_unique<Station>(Station(stationTexture.get(), new SDL_Point{ 1700, 300 }, &worldBounds))});
+	stations.push_back(unique_ptr<GameObject>{ make_unique<Station>(Station(stationTexture.get(), new SDL_Point{ 1700, 1700 }, &worldBounds))});
 
 	return true;
 }
@@ -197,17 +201,20 @@ void Game::Update(float dt) {
 		ship->HandleEvent(it1.second);
 	}
 	ship->Update(dt);
-	station->Update(dt);
-
+	for (const auto &station : stations) {
+		station->Update(dt);
+	}
 	CheckCollisions();
 	
 	UpdateCamera();
 }
 
 void Game::CheckCollisions() {
-	if (!station->IsDestroyed() && SDL_HasIntersection(ship->GetPositionRectangle(), station->GetPositionRectangle())) {
-		station->Collide(ship.get());
-		ship->Collide(station.get());
+	for (const auto &station : stations) {
+		if (!station->IsDestroyed() && SDL_HasIntersection(ship->GetPositionRectangle(), station->GetPositionRectangle())) {
+			station->Collide(ship.get());
+			ship->Collide(station.get());
+		}
 	}
 }
 
@@ -229,8 +236,10 @@ void Game::Render() {
 	SDL_RenderCopy(renderer, backgroundLayers[0].get(), &camera, &renderQuad);
 	
 	ship->Render(renderer, camera.x, camera.y);
-	station->Render(renderer, camera.x, camera.y);
-
+	for (const auto &station : stations) {
+		station->Render(renderer, camera.x, camera.y);
+	}
+	
 	RenderText("Cargo: " + std::to_string(ship->GetCargo()));
 
 	//Update screen
