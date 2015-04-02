@@ -14,6 +14,5 @@ public:
 	void Collide(const GameObject* gameObject);
 private:
 	const float turnSpeed = 0.0005f;
-	bool visited = false;
 };
 

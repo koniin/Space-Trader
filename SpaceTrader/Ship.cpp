@@ -45,7 +45,11 @@ void Ship::HandleEvent(Event e) {
 
 void Ship::Collide(const GameObject* gameObject) {
 	if (gameObject->GetType() == GameObject::Type::Station)
-		cargo++;
+		if (cargo > 0) {
+			cargo = 1;
+			resources += 100;
+		} else 
+			cargo++;
 }
 
 // Handle velocity different, but max and min velocity in update and handle constant deceleration?? 
@@ -73,6 +77,10 @@ void Ship::KeepInBounds() {
 	}
 }
 
-const int Ship::GetCargo() {
+const int Ship::GetCargo() const {
 	return cargo;
+}
+
+const int Ship::GetResources() const {
+	return resources;
 }

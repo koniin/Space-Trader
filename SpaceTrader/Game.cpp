@@ -240,7 +240,7 @@ void Game::Render() {
 		station->Render(renderer, camera.x, camera.y);
 	}
 	
-	RenderText("Cargo: " + std::to_string(ship->GetCargo()));
+	RenderText("Cargo: " + std::to_string(ship->GetCargo()) + "  Resources: " + std::to_string(ship->GetResources()));
 
 	//Update screen
 	SDL_RenderPresent(renderer);

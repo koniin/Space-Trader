@@ -1,5 +1,5 @@
 #include "Station.h"
-
+#include <random>
 
 Station::Station(SDL_Texture* texture, SDL_Point* startPoint, SDL_Point* worldBounds) 
 	: GameObject(texture, worldBounds) {
@@ -7,7 +7,6 @@ Station::Station(SDL_Texture* texture, SDL_Point* startPoint, SDL_Point* worldBo
 	sourceRect.y = startPoint->y;
 	sourceRect.w = 256;
 	sourceRect.h = 256;
-	visited = false;
 	gameObjectType = GameObject::Type::Station;
 }
 
@@ -32,6 +31,19 @@ void Station::HandleEvent(Event e) {
 
 void Station::Collide(const GameObject* gameObject) {
 	if (gameObject->GetType() == GameObject::Type::Player) {
-		Destroy();
+		
+		//the random device that will seed the generator
+		std::random_device seeder;
+		//then make a mersenne twister engine
+		std::mt19937 engine(seeder());
+		//then the easy part... the distribution
+		std::uniform_int_distribution<int> randX(sourceRect.w, worldBounds->x - sourceRect.w);
+		std::uniform_int_distribution<int> randY(sourceRect.h, worldBounds->y - sourceRect.h);
+		//then just generate the integer like this:
+		sourceRect.x = randX(engine);
+		sourceRect.y = randY(engine);
+
+		printf("%i - ", sourceRect.x);
+		printf("%i", sourceRect.y);
 	}
 }
