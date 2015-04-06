@@ -71,19 +71,16 @@ void Ship::Update(float dt) {
 	sourceRect.x = posX;
 	sourceRect.y = posY;
 
-
 	KeepInBounds();
 }
 
 void Ship::KeepInBounds() {
 	float clamped = std::max(0, std::min(sourceRect.x, worldBounds->x - sourceRect.w));
 	if (sourceRect.x != (int)clamped) {
-		SetSpeed(0);
 		sourceRect.x = clamped;
 	}
 	clamped = std::max(0, std::min(sourceRect.y, worldBounds->y - sourceRect.h));
 	if (sourceRect.y != (int)clamped) {
-		SetSpeed(0);
 		sourceRect.y = clamped;
 	}
 }

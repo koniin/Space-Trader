@@ -30,8 +30,6 @@ protected:
 	SDL_Point* worldBounds;
 	int angleAdjustment;
 	double angle;
-	int speed = 0;
-	float precalc_speed;
 	SDL_Texture* texture;
 	SDL_Rect sourceRect;
 	bool destroyed = false;
