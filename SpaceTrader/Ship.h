@@ -18,15 +18,10 @@ public:
 	const int GetCargo() const;
 	const int GetResources() const;
 private:
-	int speedForwardMax;
-	int speedBackwardMax;
-	int directionX;
-	int directionY;
 	int cargo = 0;
 	int resources = 0;
 	float posX;
 	float posY;
-	float speed;
 	const float turnSpeed;
 	const int speedIncreaseStep = 5;
 

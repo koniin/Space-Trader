@@ -8,21 +8,17 @@
 
 Ship::Ship(SDL_Texture* tex, SDL_Point* startPoint, SDL_Point* world) 
 	: GameObject(tex, world),
-	friction(0.98f),
+	friction(0.02f),
 	velocityX(0.0f),
 	velocityY(0.0f),
-	speed(0.011f),
-	turnSpeed(0.002f) {
+	turnSpeed(4.0f) {
 	posX = startPoint->x;
 	posY = startPoint->y;
 	sourceRect.x = startPoint->x;
 	sourceRect.y = startPoint->y;
 	sourceRect.w = 50;
 	sourceRect.h = 19;
-	precalc_speed = 0.0f;
-	speedForwardMax = 15;
-	speedBackwardMax = -10;
-	angle = 0.0f;
+	angle = 90.0f;
 	angleAdjustment = -90;
 	startPoint = NULL;
 	gameObjectType = GameObject::Type::Player;
@@ -34,22 +30,22 @@ void Ship::Render(SDL_Renderer* renderer, int cameraX, int cameraY) {
 }
 
 void Ship::HandleEvent(Event e) {
-	float radians = angle / M_PI * 180;
 	if (e == ACCELERATE) {
-		velocityX += std::cos(radians) * speed;
-		velocityY += std::sin(radians) * speed;
-		
-		//velocity.x = std::min(velocity.x, speedForwardMax);
-		//velocity.y = std::min(velocity.y, speedForwardMax);
+		// Create a normalized vector in the direction of travel
+		float directionX = static_cast<float>(sin(2 * M_PI * (angle / 360)));
+		float directionY = static_cast<float>(cos(2 * M_PI * (angle / 360)));
+
+		// Add to velocity vector (using minus for y because 0,0 is the top-left corner instead of bottom-left)
+		velocityX += directionX * 0.01f;
+		velocityY -= directionY * 0.01f;
 	}
-	/*
 	if (e == DECELERATE) {
-		speed -= speedIncreaseStep;
-		SetSpeed(std::max(speed, speedBackwardMax));
+		velocityX *= 0.9;
+		velocityY *= 0.9;
 	}
 	if (e == MOVE_RIGHT) {
 		angle += turnSpeed;
-	}*/
+	}
 	if (e == MOVE_LEFT) {
 		angle -= turnSpeed;
 	}
@@ -64,31 +60,18 @@ void Ship::Collide(const GameObject* gameObject) {
 			cargo++;
 }
 
-// Handle velocity different, but max and min velocity in update and handle constant deceleration?? 
-// or maybe just keep it as "gears" as it is, in constant increase/decrease no need to hold keys to keep it less arcadey
-
 void Ship::Update(float dt) {	
-	
+	posX += velocityX * dt;
+	posY += velocityY * dt;
 
-	//this.px = this.position.x + 20 * std::cos(radians);
-	//this.py = this.position.y + 20 * std::sin(radians);
-
-	// Apply friction
-	velocityX *= friction;
-	velocityY *= friction;
-
-	// Apply the velocity to the position
-	posX += (velocityX * dt);
-	posY += (velocityY * dt);
+	// friction (in space lol)
+	velocityX = velocityX - velocityX * (friction);
+	velocityY = velocityY - velocityY * (friction);
 
 	sourceRect.x = posX;
 	sourceRect.y = posY;
-	/* 
-	posX += cos((angleAdjustment + angle) * M_PI / 180) * (precalc_speed * dt);
-	posY += sin((angleAdjustment + angle) * M_PI / 180) * (precalc_speed * dt);
-	sourceRect.x = posX;
-	sourceRect.y = posY;
-	*/
+
+
 	KeepInBounds();
 }
 

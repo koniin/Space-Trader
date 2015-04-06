@@ -127,7 +127,8 @@ void Game::GameLoop3() {
 	//float t = 0.0;
 
 	camera = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
-	const float dt = 0.16666; // 6000 updates/s
+	//const float dt = 0.16666; // 6000 updates/s
+	const float dt = 16.666; // 60 updates/s
 	float currentTime = SDL_GetTicks();
 	float accumulator = 0.0;
 
