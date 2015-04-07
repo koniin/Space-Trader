@@ -11,15 +11,16 @@ Ship::Ship(SDL_Texture* tex, SDL_Point* startPoint, SDL_Point* world)
 	friction(0.02f),
 	velocityX(0.0f),
 	velocityY(0.0f),
-	turnSpeed(4.0f) {
+	turnSpeed(3.0f) {
 	posX = startPoint->x;
 	posY = startPoint->y;
 	sourceRect.x = startPoint->x;
 	sourceRect.y = startPoint->y;
-	sourceRect.w = 50;
-	sourceRect.h = 19;
+	sourceRect.w = 32;
+	sourceRect.h = 32;
 	angle = 90.0f;
-	angleAdjustment = -90;
+	//angleAdjustment = -90;
+	angleAdjustment = 0;
 	startPoint = NULL;
 	gameObjectType = GameObject::Type::Player;
 }
@@ -78,10 +79,14 @@ void Ship::KeepInBounds() {
 	float clamped = std::max(0, std::min(sourceRect.x, worldBounds->x - sourceRect.w));
 	if (sourceRect.x != (int)clamped) {
 		sourceRect.x = clamped;
+		velocityX = 0;
+		velocityY = 0;
 	}
 	clamped = std::max(0, std::min(sourceRect.y, worldBounds->y - sourceRect.h));
 	if (sourceRect.y != (int)clamped) {
 		sourceRect.y = clamped;
+		velocityX = 0;
+		velocityY = 0;
 	}
 }
 

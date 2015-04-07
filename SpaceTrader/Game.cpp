@@ -72,8 +72,8 @@ bool Game::Load() {
 	statistics = make_unique<Statistics>(Statistics());
 	backgroundLayers[0] = LoadTexture("2.png");
 	backgroundLayers[1] = LoadTexture("starfield.png");
-	shipTexture = LoadTexture("cruiser.png");
-	stationTexture = LoadTexture("station.png");
+	shipTexture = LoadTexture("Ship3.png");
+	stationTexture = LoadTexture("Cargo.png");
 	ship = unique_ptr<Ship>{ make_unique<Ship>(Ship(shipTexture.get(), new SDL_Point{ 100, 100 }, &worldBounds))};
 
 	stations.push_back(unique_ptr<GameObject>{ make_unique<Station>(Station(stationTexture.get(), new SDL_Point { 100, 500 }, &worldBounds))});

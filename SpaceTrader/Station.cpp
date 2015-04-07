@@ -5,8 +5,8 @@ Station::Station(SDL_Texture* texture, SDL_Point* startPoint, SDL_Point* worldBo
 	: GameObject(texture, worldBounds) {
 	sourceRect.x = startPoint->x;
 	sourceRect.y = startPoint->y;
-	sourceRect.w = 256;
-	sourceRect.h = 256;
+	sourceRect.w = 16;
+	sourceRect.h = 16;
 	gameObjectType = GameObject::Type::Station;
 }
 
@@ -23,7 +23,7 @@ void Station::Render(SDL_Renderer* renderer, int cameraX, int cameraY) {
 }
 
 void Station::Update(float dt) {
-	angle += turnSpeed;
+	//angle += turnSpeed;
 }
 
 void Station::HandleEvent(Event e) {

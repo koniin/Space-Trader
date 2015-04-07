@@ -73,6 +73,21 @@
     <Image Include="starfield.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Cargo.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Ship2.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="shipz.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Ship4.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Ship3.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Font Include="8_BIT_WONDER.TTF">

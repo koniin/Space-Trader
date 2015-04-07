@@ -91,12 +91,17 @@
     <Image Include="3.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
+    <Image Include="Cargo.png" />
     <Image Include="cruiser.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
     <Image Include="Planet3.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
+    <Image Include="Ship2.png" />
+    <Image Include="Ship3.png" />
+    <Image Include="Ship4.png" />
+    <Image Include="shipz.png" />
     <Image Include="starfield.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
