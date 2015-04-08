@@ -199,8 +199,8 @@ void Game::HandleInput() {
 }
 
 void Game::Update(float dt) {
-	for (auto const &it1 : keysDown) {
-		ship->HandleEvent(it1.second);
+	for (auto const &keys : keysDown) {
+		ship->HandleEvent(keys.second);
 	}
 	ship->Update(dt);
 	for (const auto &station : stations) {
