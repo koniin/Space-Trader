@@ -110,6 +110,7 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
+    <Font Include="04B_03.TTF" />
     <Font Include="8_BIT_WONDER.TTF" />
     <Font Include="ABSTRACT.TTF">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>

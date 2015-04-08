@@ -68,7 +68,7 @@ bool Game::InitSDL() {
 }
 
 bool Game::Load() {
-	font = LoadFont("ABSTRACT.ttf");
+	font = LoadFont("04B_03.ttf", 8);
 	statistics = make_unique<Statistics>(Statistics());
 	backgroundLayers[0] = LoadTexture("2.png");
 	backgroundLayers[1] = LoadTexture("starfield.png");
@@ -208,6 +208,9 @@ void Game::Update(float dt) {
 	}
 	CheckCollisions();
 	
+	if (ship->GetResources() >= 1000)
+		quit = true;
+
 	UpdateCamera();
 }
 
@@ -295,9 +298,9 @@ TexturePtr Game::LoadTexture(std::string path) {
 	return newTexture;
 }
 
-TTF_Font* Game::LoadFont(string path) {
+TTF_Font* Game::LoadFont(string path, int fontSize) {
 	//Open the font
-	font = TTF_OpenFont(path.c_str(), 8);
+	font = TTF_OpenFont(path.c_str(), fontSize);
 	if (font == NULL) {
 		printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
 		return NULL;

@@ -96,5 +96,6 @@
     <Font Include="ABSTRACT.TTF">
       <Filter>Resource Files</Filter>
     </Font>
+    <Font Include="04B_03.TTF" />
   </ItemGroup>
 </Project>

@@ -71,6 +71,6 @@ private:
 	void Render();
 	void RenderText(string text);
 	TexturePtr LoadTexture(string path);
-	TTF_Font* LoadFont(string path);
+	TTF_Font* LoadFont(string path, int fontSize);
 };
 
