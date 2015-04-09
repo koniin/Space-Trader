@@ -21,12 +21,16 @@ private:
 	TexturePtr stationTexture;
 	TTF_Font* font = NULL;
 	SDL_Point worldBounds;
+	float elapsedTime;
+	float msCounter;
 
 	void CheckCollisions();
 	void UpdateCamera();
 	void RenderText(std::string text);
+	void RenderText(std::string text, SDL_Point pos, SDL_Color textColor);
 	TexturePtr LoadTexture(std::string path);
 	TTF_Font* LoadFont(std::string path, int fontSize);
+	std::string GetTimerText();
 public:
 	GameState(StateManager& stateManager);
 	~GameState();

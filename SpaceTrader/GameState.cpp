@@ -1,6 +1,8 @@
 #include "GameState.h"
 #include "World.h"
 #include <iostream>
+#include <iomanip>
+#include <sstream>
 #include <algorithm>
 
 GameState::GameState(StateManager& stateManager)
@@ -34,8 +36,13 @@ void GameState::Init() {
 	stations.push_back(std::unique_ptr<GameObject>{ std::make_unique<Station>(Station(stationTexture.get(), new SDL_Point{ 1700, 1700 }, &worldBounds))});
 
 }
-	
+
 bool GameState::Update(float deltaTime) {
+	elapsedTime += deltaTime;
+	msCounter += deltaTime;
+	if (msCounter > 999)
+		msCounter = 0;
+	
 	ship->Update(deltaTime);
 
 	for (const auto &station : stations) {
@@ -72,6 +79,8 @@ void GameState::Draw() {
 	}
 
 	RenderText("Cargo: " + std::to_string(ship->GetCargo()) + "  Resources: " + std::to_string(ship->GetResources()));
+
+	RenderText(GetTimerText(), { (world.SCREEN_WIDTH / 2) - 30, 10 }, { 255, 255, 255 });
 
 	//Update screen
 	SDL_RenderPresent(renderer);
@@ -126,6 +135,30 @@ void GameState::RenderText(std::string text) {
 	}
 }
 
+void GameState::RenderText(std::string text, SDL_Point pos, SDL_Color textColor) {
+	//Render text surface
+	SDL_Surface* textSurface = TTF_RenderText_Solid(font, text.c_str(), textColor);
+	if (textSurface == NULL) {
+		printf("Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError());
+	}
+	else {
+		//Create texture from surface pixels
+		SDL_Texture* texture = SDL_CreateTextureFromSurface(GetRenderer(), textSurface);
+		if (texture == NULL) {
+			printf("Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError());
+		}
+		else {
+			SDL_Rect renderQuad = { pos.x, pos.y, textSurface->w, textSurface->h };
+			SDL_RenderCopyEx(GetRenderer(), texture, NULL, &renderQuad, NULL, NULL, SDL_FLIP_NONE);
+			SDL_DestroyTexture(texture);
+			texture = NULL;
+		}
+
+		//Get rid of old surface
+		SDL_FreeSurface(textSurface);
+	}
+}
+
 TexturePtr GameState::LoadTexture(std::string path) {
 	//The final texture
 	TexturePtr newTexture = NULL;
@@ -157,4 +190,13 @@ TTF_Font* GameState::LoadFont(std::string path, int fontSize) {
 		return NULL;
 	}
 	return font;
+}
+
+std::string GameState::GetTimerText() {
+	std::stringstream ss;
+	float seconds = (int)(elapsedTime / 1000) % 60;
+	float minutes = (int)(elapsedTime / (1000 * 60)) % 60;
+	float milliseconds = msCounter / 10;
+	ss << std::setfill('0') << std::setw(2) << minutes << " : " << std::setfill('0') << std::setw(2) << seconds << " : " << std::setfill('0') << std::setw(2) << std::round(milliseconds);
+	return ss.str();
 }
