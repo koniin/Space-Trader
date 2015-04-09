@@ -23,6 +23,7 @@ private:
 	SDL_Point worldBounds;
 	float elapsedTime;
 	float msCounter;
+	float timeLeft;
 
 	void CheckCollisions();
 	void UpdateCamera();

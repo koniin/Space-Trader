@@ -14,7 +14,6 @@ void GameOverState::Init() {
 }
 	
 bool GameOverState::Update(float deltaTime) {
-	std::cout << "Game OVER update." << std::endl;
 	PopState();
 	PushState("gamestate");
 	return true;

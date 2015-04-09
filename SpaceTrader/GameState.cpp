@@ -16,6 +16,7 @@ GameState::~GameState() {
 }
 
 void GameState::Init() {
+	elapsedTime = 0;
 	std::cout << "GAMESTATE Init." << std::endl;
 	auto world = GetWorld();
 	camera = { 0, 0, world.SCREEN_WIDTH, world.SCREEN_HEIGHT };
@@ -40,9 +41,10 @@ void GameState::Init() {
 bool GameState::Update(float deltaTime) {
 	elapsedTime += deltaTime;
 	msCounter += deltaTime;
+	timeLeft = 300000 - elapsedTime;
 	if (msCounter > 999)
 		msCounter = 0;
-	
+
 	ship->Update(deltaTime);
 
 	for (const auto &station : stations) {
@@ -52,6 +54,10 @@ bool GameState::Update(float deltaTime) {
 	CheckCollisions();
 
 	if (ship->GetResources() >= 1000) {
+		PopState();
+		PushState("gameoverstate");
+	}
+	else if (timeLeft <= 0) {
 		PopState();
 		PushState("gameoverstate");
 	}
@@ -194,9 +200,9 @@ TTF_Font* GameState::LoadFont(std::string path, int fontSize) {
 
 std::string GameState::GetTimerText() {
 	std::stringstream ss;
-	float seconds = (int)(elapsedTime / 1000) % 60;
-	float minutes = (int)(elapsedTime / (1000 * 60)) % 60;
-	float milliseconds = msCounter / 10;
+	float seconds = (int)(timeLeft / 1000) % 60;
+	float minutes = (int)(timeLeft / (1000 * 60)) % 60;
+	float milliseconds = 100 - (msCounter / 10);
 	ss << std::setfill('0') << std::setw(2) << minutes << " : " << std::setfill('0') << std::setw(2) << seconds << " : " << std::setfill('0') << std::setw(2) << std::round(milliseconds);
 	return ss.str();
 }
