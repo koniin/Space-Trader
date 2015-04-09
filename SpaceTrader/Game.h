@@ -9,14 +9,13 @@
 #include <map>
 #include <algorithm>
 #include <vector>
+#include "StateManager.h"
 #include "GameObject.h"
 #include "Ship.h"
 #include "Statistics.h"
 
 using namespace std;
 
-struct _TextureDeleter { void operator()(SDL_Texture* tex) const { SDL_DestroyTexture(tex); printf("texture deleted. \n"); } };
-using TexturePtr = std::unique_ptr<SDL_Texture, _TextureDeleter>;
 
 class Game
 {
@@ -35,12 +34,10 @@ private:
 	const unsigned int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
 	const unsigned int MAX_FRAMESKIP = 10;
 	
-	SDL_Rect camera;
+	StateManager stateManager;
 	SDL_Point worldBounds;
 
 	unique_ptr<Statistics> statistics;
-	unique_ptr<Ship> ship;
-	std::vector<std::unique_ptr<GameObject>> stations;
 	
 	std::map<SDL_Keycode, Event> keysDown;
 
@@ -51,26 +48,12 @@ private:
 	bool quit = false;
 	//The window we'll be rendering to
 	SDL_Window* window;
-	TexturePtr backgroundLayers[2];
-	TexturePtr shipTexture;
-	TexturePtr stationTexture;
 	
-	TTF_Font* font = NULL;
 	SDL_Renderer* renderer = NULL;
-	SDL_Texture* texture = NULL;
 
 	bool InitSDL();
 	bool Load();
 	void GameLoop();
-	void GameLoop2();
-	void GameLoop3();
 	void HandleInput();
-	void Update(float dt);
-	void CheckCollisions();
-	void UpdateCamera();
-	void Render();
-	void RenderText(string text);
-	TexturePtr LoadTexture(string path);
-	TTF_Font* LoadFont(string path, int fontSize);
 };
 

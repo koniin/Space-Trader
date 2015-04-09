@@ -3,8 +3,8 @@
 #include "Station.h"
 
 Game::Game() 
-	: keysDown() {
-	worldBounds = SDL_Point{ LEVEL_WIDTH, LEVEL_HEIGHT };
+	: keysDown(),
+	stateManager(World()) {
 	printf("Starting game \n");
 }
 
@@ -14,12 +14,11 @@ Game::~Game() {
 void Game::Run() {
 	if (InitSDL()) {
 		Load();
-		GameLoop3();
+		stateManager.SetRenderer(renderer);
+		GameLoop();
 	} 
 
-	TTF_CloseFont(font);
-	font = NULL;
-	//SDL_DestroyRenderer(renderer);  // slow ?
+	SDL_DestroyRenderer(renderer);  // slow ?
 	SDL_DestroyWindow(window);
 	window = NULL;
 	renderer = NULL;
@@ -68,65 +67,12 @@ bool Game::InitSDL() {
 }
 
 bool Game::Load() {
-	font = LoadFont("04B_03.ttf", 8);
-	statistics = make_unique<Statistics>(Statistics());
-	backgroundLayers[0] = LoadTexture("2.png");
-	backgroundLayers[1] = LoadTexture("starfield.png");
-	shipTexture = LoadTexture("Ship3.png");
-	stationTexture = LoadTexture("Cargo.png");
-	ship = unique_ptr<Ship>{ make_unique<Ship>(Ship(shipTexture.get(), new SDL_Point{ 100, 100 }, &worldBounds))};
-
-	stations.push_back(unique_ptr<GameObject>{ make_unique<Station>(Station(stationTexture.get(), new SDL_Point { 100, 500 }, &worldBounds))});
-	stations.push_back(unique_ptr<GameObject>{ make_unique<Station>(Station(stationTexture.get(), new SDL_Point { 1700, 500 }, &worldBounds))});
-	stations.push_back(unique_ptr<GameObject>{ make_unique<Station>(Station(stationTexture.get(), new SDL_Point{ 1700, 300 }, &worldBounds))});
-	stations.push_back(unique_ptr<GameObject>{ make_unique<Station>(Station(stationTexture.get(), new SDL_Point{ 1700, 1700 }, &worldBounds))});
-
+	stateManager.Init("gamestate");
+	statistics = std::make_unique<Statistics>(Statistics());
 	return true;
 }
 
 void Game::GameLoop() {
-	while (!quit) {
-		HandleInput();
-		Update(0);
-		Render();
-	}
-}
-
-void Game::GameLoop2() {
-	fps_lasttime = SDL_GetTicks();
-	Uint32 next_game_tick = SDL_GetTicks();
-	fps_frames = 0;
-	int loops;
-	int updates = 0;
-	while (!quit) {
-		loops = 0;
-		while (SDL_GetTicks() > next_game_tick && loops < MAX_FRAMESKIP) {
-			HandleInput();
-			Update(0);
-			
-			next_game_tick += SKIP_TICKS;
-			loops++;
-			updates++;
-		}
-
-		Render();
-		fps_frames++;
-
-		if (fps_lasttime < SDL_GetTicks() - 1000.0) {
-			fps_lasttime = SDL_GetTicks();
-			fps_current = fps_frames;
-			printf("updates/s: %i ,", updates);
-			printf("fps: %i\n", fps_current);
-			updates = 0;
-			fps_frames = 0;
-		}
-	}
-}
-
-void Game::GameLoop3() {
-	//float t = 0.0;
-
-	camera = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
 	//const float dt = 0.16666; // 6000 updates/s
 	const float dt = 16.666; // 60 updates/s
 	float currentTime = SDL_GetTicks();
@@ -143,13 +89,19 @@ void Game::GameLoop3() {
 		accumulator += frameTime;
 		while (accumulator >= dt) {
 			HandleInput();
-		    Update(dt); // simulate a "frame" of logic at a different FPS than we simulate a frame of rendering
+
+			for (auto const &keys : keysDown) {
+				stateManager.HandleEvent(keys.second);
+			}
+			stateManager.Update(dt);
+
 		    accumulator -= dt;
 			//t += dt;
 			statistics->IncreaseUpdates();
 		}
 		
-		Render();
+		stateManager.Draw();
+
 		statistics->IncreaseFrames();
 		statistics->Log();
 	}
@@ -176,16 +128,9 @@ void Game::HandleInput() {
 				break;
 			case SDLK_w:
 				keysDown[e.key.keysym.sym] = ACCELERATE;
-				//ship->HandleEvent();
 				break;
 			case SDLK_s:
-				ship->HandleEvent(DECELERATE);
-				break;
-			case SDLK_e:
-				ship->HandleEvent(STRAFE_RIGHT);
-				break;
-			case SDLK_q:
-				ship->HandleEvent(STRAFE_LEFT);
+				keysDown[e.key.keysym.sym] = DECELERATE;
 				break;
 			case SDLK_ESCAPE:
 				quit = true;
@@ -196,114 +141,4 @@ void Game::HandleInput() {
 			keysDown.erase(e.key.keysym.sym);
 		}
 	}
-}
-
-void Game::Update(float dt) {
-	for (auto const &keys : keysDown) {
-		ship->HandleEvent(keys.second);
-	}
-	ship->Update(dt);
-	for (const auto &station : stations) {
-		station->Update(dt);
-	}
-	CheckCollisions();
-	
-	if (ship->GetResources() >= 1000)
-		quit = true;
-
-	UpdateCamera();
-}
-
-void Game::CheckCollisions() {
-	for (const auto &station : stations) {
-		if (!station->IsDestroyed() && SDL_HasIntersection(ship->GetPositionRectangle(), station->GetPositionRectangle())) {
-			station->Collide(ship.get());
-			ship->Collide(station.get());
-		}
-	}
-}
-
-void Game::UpdateCamera() {
-	const SDL_Rect* shipPos = ship->GetPositionRectangle();
-	camera.x = (shipPos->x + shipPos->w / 2) - SCREEN_WIDTH / 2;
-	camera.y = (shipPos->y + shipPos->h / 2) - SCREEN_HEIGHT / 2;
-	camera.x = std::max(0, std::min(camera.x, LEVEL_WIDTH - camera.w));
-	camera.y = std::max(0, std::min(camera.y, LEVEL_HEIGHT - camera.h));
-}
-
-void Game::Render() {
-	//Clear screen
-	SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
-	SDL_RenderClear(renderer);
-
-	//Render background
-	SDL_Rect renderQuad = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
-	SDL_RenderCopy(renderer, backgroundLayers[0].get(), &camera, &renderQuad);
-	
-	ship->Render(renderer, camera.x, camera.y);
-	for (const auto &station : stations) {
-		station->Render(renderer, camera.x, camera.y);
-	}
-	
-	RenderText("Cargo: " + std::to_string(ship->GetCargo()) + "  Resources: " + std::to_string(ship->GetResources()));
-
-	//Update screen
-	SDL_RenderPresent(renderer);
-}
-
-void Game::RenderText(string text) {
-	//Render text surface
-	SDL_Color textColor = { 93, 149, 212 };
-	SDL_Surface* textSurface = TTF_RenderText_Solid(font, text.c_str(), textColor);
-	if (textSurface == NULL) {
-		printf("Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError());
-	}
-	else {
-		//Create texture from surface pixels
-		SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, textSurface);
-		if (texture == NULL) {
-			printf("Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError());
-		} else {
-			SDL_Rect renderQuad = { 10, SCREEN_HEIGHT - textSurface->h * 1.5f, textSurface->w, textSurface->h };
-			SDL_RenderCopyEx(renderer, texture, NULL, &renderQuad, NULL, NULL, SDL_FLIP_NONE);
-			SDL_DestroyTexture(texture);
-    			texture = NULL;
-		}
-
-		//Get rid of old surface
-		SDL_FreeSurface(textSurface);
-	}
-}
-
-TexturePtr Game::LoadTexture(std::string path) {
-	//The final texture
-	TexturePtr newTexture = NULL;
-
-	//Load image at specified path
-	SDL_Surface* loadedSurface = IMG_Load(path.c_str());
-	if (loadedSurface == NULL) {
-		printf("Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError());
-	}
-	else {
-		//Create texture from surface pixels
-		newTexture = TexturePtr(SDL_CreateTextureFromSurface(renderer, loadedSurface));
-		if (newTexture == NULL) {
-			printf("Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError());
-		}
-
-		//Get rid of old loaded surface
-		SDL_FreeSurface(loadedSurface);
-	}
-
-	return newTexture;
-}
-
-TTF_Font* Game::LoadFont(string path, int fontSize) {
-	//Open the font
-	font = TTF_OpenFont(path.c_str(), fontSize);
-	if (font == NULL) {
-		printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
-		return NULL;
-	}
-	return font;
 }

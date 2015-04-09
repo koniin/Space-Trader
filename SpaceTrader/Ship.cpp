@@ -41,8 +41,8 @@ void Ship::HandleEvent(Event e) {
 		velocityY -= directionY * 0.01f;
 	}
 	if (e == DECELERATE) {
-		velocityX *= 0.9;
-		velocityY *= 0.9;
+		velocityX *= 0.97;
+		velocityY *= 0.97;
 	}
 	if (e == MOVE_RIGHT) {
 		angle += turnSpeed;
